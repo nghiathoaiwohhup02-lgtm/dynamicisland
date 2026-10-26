@@ -39,6 +39,7 @@ public partial class IslandWindow : Window
     private double _centerX;
     private double _islandTop;
     private Rect _monitor;
+    private Rect _workArea;
 
     // Đảo ở nửa dưới màn hình (vd. trên taskbar) thì giữ mép dưới, bảng bung lên trên.
     private bool _growUp;
@@ -186,20 +187,26 @@ public partial class IslandWindow : Window
         var s = _settings.Current;
         if (s.IslandX is double x && s.IslandY is double y)
         {
-            _monitor = MonitorAtPixel(new System.Drawing.Point((int)(x * DpiScale), (int)(y * DpiScale)));
+            SetMonitor(new System.Drawing.Point((int)(x * DpiScale), (int)(y * DpiScale)));
             _centerX = x;
             _islandTop = y;
         }
         else
         {
             _monitor = ToDip(Forms.Screen.PrimaryScreen!.Bounds);
+            _workArea = ToDip(Forms.Screen.PrimaryScreen!.WorkingArea);
             _centerX = _monitor.Left + _monitor.Width / 2;
             _islandTop = _monitor.Top + DefaultTopMargin;
         }
         Relayout(animate: false);
     }
 
-    private Rect MonitorAtPixel(System.Drawing.Point point) => ToDip(Forms.Screen.FromPoint(point).Bounds);
+    private void SetMonitor(System.Drawing.Point point)
+    {
+        var screen = Forms.Screen.FromPoint(point);
+        _monitor = ToDip(screen.Bounds);
+        _workArea = ToDip(screen.WorkingArea);
+    }
 
     private Rect ToDip(System.Drawing.Rectangle r)
     {
@@ -267,7 +274,7 @@ public partial class IslandWindow : Window
 
         if (_dragging)
         {
-            _monitor = MonitorAtPixel(cursor);
+            SetMonitor(cursor);
             _centerX = _pressCenterX + dx / DpiScale;
             _islandTop = _pressTop + (cursor.Y - _pressCursor.Y) / DpiScale;
             Relayout(animate: false);
@@ -314,8 +321,14 @@ public partial class IslandWindow : Window
         var x = Math.Clamp(anchorX - width / 2, 0, Math.Max(0, Width - width));
 
         // Nở xuống từ mép trên, hoặc nở lên từ mép dưới khi đảo ở nửa dưới màn hình.
+        // Đảo đặt trên taskbar: tin báo (vd. đổi âm lượng) hiện hẳn phía trên taskbar. Lúc mở bảng âm lượng/
+        // Quick Settings, Windows nâng taskbar lên trên mọi ứng dụng nên phần nằm trong taskbar sẽ bị che.
+        // Không áp dụng khi mở rộng: bảng phải phủ chỗ con trỏ đang rê, nếu dời đi đảo sẽ tự thu lại.
+        var bottom = _islandTop + CollapsedHeight;
+        if (_growUp && _vm.State == IslandState.Peek && bottom > _workArea.Bottom)
+            bottom = _workArea.Bottom - 6;
         var top = _islandTop - Top;
-        var y = _growUp ? top + CollapsedHeight - height : top;
+        var y = _growUp ? bottom - Top - height : top;
         y = Math.Clamp(y, 0, Math.Max(0, Height - height));
 
         Island.CornerRadius = new CornerRadius(radius);
