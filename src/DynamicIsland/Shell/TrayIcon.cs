@@ -52,6 +52,8 @@ internal sealed class TrayIcon : IDisposable
     public static string Version { get; } =
         typeof(TrayIcon).Assembly.GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "";
 
+    public void ShowBalloon(string title, string message) => _icon.ShowBalloonTip(5000, title, message, Forms.ToolTipIcon.Info);
+
     public static void OpenSettingsFile()
     {
         try

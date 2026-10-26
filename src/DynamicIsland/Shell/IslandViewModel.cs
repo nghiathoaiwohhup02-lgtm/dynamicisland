@@ -186,6 +186,9 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
         else Collapse();
     }
 
+    /// <summary>Báo một tin từ ứng dụng (không thuộc module nào), vd. đã cập nhật phiên bản.</summary>
+    public void Announce(PeekRequest request) => OnPeekRequested(this, request);
+
     private void OnPeekRequested(object? sender, PeekRequest request)
     {
         if (request.PlaySound) SystemSounds.Asterisk.Play();

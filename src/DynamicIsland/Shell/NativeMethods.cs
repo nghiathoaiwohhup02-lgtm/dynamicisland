@@ -54,6 +54,18 @@ internal static partial class NativeMethods
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern int GetClassName(IntPtr hWnd, StringBuilder name, int maxCount);
 
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
+
+    /// <summary>Đưa cửa sổ lên trên cùng nhóm "luôn ở trên" (trên cả taskbar) mà không đổi vị trí, không lấy focus.</summary>
+    public static void BringToTopmost(IntPtr hwnd)
+    {
+        const uint SWP_NOSIZE = 0x0001, SWP_NOMOVE = 0x0002, SWP_NOACTIVATE = 0x0010, SWP_NOOWNERZORDER = 0x0200;
+        if (hwnd != IntPtr.Zero)
+            SetWindowPos(hwnd, new IntPtr(-1), 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+    }
+
     [DllImport("user32.dll")]
     private static extern short GetAsyncKeyState(int vKey);
 

@@ -16,6 +16,9 @@ public sealed class AppSettings
     public int PomodoroLongBreakMinutes { get; set; } = 15;
     public int PomodoroRoundsBeforeLongBreak { get; set; } = 4;
 
+    /// <summary>Phiên bản chạy lần trước, để báo "đã cập nhật" khi mở bản mới.</summary>
+    public string? LastRunVersion { get; set; }
+
     /// <summary>Id các tab muốn ẩn, vd. ["media", "water"]. Xem Id trong README.</summary>
     public List<string> HiddenModules { get; set; } = [];
 

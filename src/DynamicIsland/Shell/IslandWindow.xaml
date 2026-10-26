@@ -10,23 +10,16 @@
 
     <!--
         Cửa sổ trong suốt hoàn toàn để chuột đi xuyên qua; chỉ khối đen "Island" nhận chuột.
-        Đảo dạng tai thỏ (iPhone 13): dính sát mép trên, bo hai góc dưới, hai "vành" lõm nối vào mép màn hình.
+        Đảo dạng viên thuốc, kéo đặt được ở bất cứ đâu, kể cả trên taskbar.
     -->
     <Canvas>
-        <Grid x:Name="Island" Canvas.Left="0" Canvas.Top="0" Width="212" Height="30"
-              MouseEnter="Island_MouseEnter" MouseLeave="Island_MouseLeave"
-              MouseLeftButtonDown="Island_MouseLeftButtonDown"
-              PreviewMouseLeftButtonDown="Island_PreviewMouseLeftButtonDown"
-              AllowDrop="True" DragEnter="Island_DragEnter" DragLeave="Island_DragLeave" Drop="Island_Drop"
-              KeyDown="Island_KeyDown">
-
-            <Path HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{StaticResource IslandBrush}"
-                  Data="M0,0 L6,0 L6,6 A6,6 0 0 0 0,0 Z" />
-            <Path HorizontalAlignment="Right" VerticalAlignment="Top" Fill="{StaticResource IslandBrush}"
-                  Data="M6,0 L0,0 L0,6 A6,6 0 0 1 6,0 Z" />
-
-            <Border x:Name="Body" Margin="6,0" CornerRadius="0,0,10,10" Background="{StaticResource IslandBrush}"
-                    Cursor="Hand">
+        <Border x:Name="Island" Canvas.Left="0" Canvas.Top="6" Width="200" Height="30" CornerRadius="15"
+                Background="{StaticResource IslandBrush}" Cursor="Hand"
+                MouseEnter="Island_MouseEnter" MouseLeave="Island_MouseLeave"
+                MouseLeftButtonDown="Island_MouseLeftButtonDown"
+                PreviewMouseLeftButtonDown="Island_PreviewMouseLeftButtonDown"
+                AllowDrop="True" DragEnter="Island_DragEnter" DragLeave="Island_DragLeave" Drop="Island_Drop"
+                KeyDown="Island_KeyDown">
                 <Grid>
                     <!-- Thu gọn: giờ bên trái, hoạt động đang diễn ra bên phải. -->
                     <Grid x:Name="CompactLayer" Margin="16,0,14,0">
@@ -94,7 +87,6 @@
                                         Content="{Binding SelectedModule.ExpandedView}" />
                     </Grid>
                 </Grid>
-            </Border>
-        </Grid>
+        </Border>
     </Canvas>
 </Window>

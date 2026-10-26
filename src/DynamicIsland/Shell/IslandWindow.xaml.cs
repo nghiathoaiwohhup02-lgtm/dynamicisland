@@ -18,24 +18,31 @@ public partial class IslandWindow : Window
     private static readonly Duration Morph = new(TimeSpan.FromMilliseconds(380));
     private static readonly Duration Fade = new(TimeSpan.FromMilliseconds(180));
 
-    // Bề rộng mỗi "vành" lõm hai bên tai thỏ, khớp với hai Path trong XAML.
-    private const double Ear = 6;
     private const double CollapsedWidth = 200;
+    private const double CollapsedHeight = 30;
+    private const double DefaultTopMargin = 6;
     private const int DragThresholdPx = 4;
 
     private readonly IslandViewModel _vm;
     private readonly SettingsStore _settings;
     private readonly DispatcherTimer _pressTimer = new() { Interval = TimeSpan.FromMilliseconds(15) };
+    // Taskbar cũng là cửa sổ "luôn ở trên"; bấm vào taskbar là nó đè lên đảo, nên định kỳ đưa đảo lên lại.
+    private readonly DispatcherTimer _topmostTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private FullscreenWatcher? _fullscreen;
     private bool _hiddenByUser;
     private bool _hiddenByFullscreen;
 
-    // Vị trí tâm đảo theo chiều ngang và màn hình đang chứa đảo, đơn vị DIP.
+    // Vị trí đảo lúc thu gọn (tâm ngang, mép trên) và màn hình đang chứa đảo, đơn vị DIP.
     private double _centerX;
+    private double _islandTop;
     private Rect _monitor;
+
+    // Đảo ở nửa dưới màn hình (vd. trên taskbar) thì giữ mép dưới, bảng bung lên trên.
+    private bool _growUp;
 
     private System.Drawing.Point _pressCursor;
     private double _pressCenterX;
+    private double _pressTop;
     private bool _dragging;
     private bool _keyboardMode;
 
@@ -46,6 +53,8 @@ public partial class IslandWindow : Window
         _settings = settings;
         _vm.PropertyChanged += OnViewModelChanged;
         _pressTimer.Tick += OnPressTick;
+        _topmostTimer.Tick += (_, _) => NativeMethods.BringToTopmost(new WindowInteropHelper(this).Handle);
+        _topmostTimer.Start();
 
         SourceInitialized += (_, _) =>
         {
@@ -158,16 +167,17 @@ public partial class IslandWindow : Window
     private void RestorePosition()
     {
         var s = _settings.Current;
-        var primary = ToDip(Forms.Screen.PrimaryScreen!.Bounds);
         if (s.IslandX is double x && s.IslandY is double y)
         {
             _monitor = MonitorAtPixel(new System.Drawing.Point((int)(x * DpiScale), (int)(y * DpiScale)));
             _centerX = x;
+            _islandTop = y;
         }
         else
         {
-            _monitor = primary;
-            _centerX = primary.Left + primary.Width / 2;
+            _monitor = ToDip(Forms.Screen.PrimaryScreen!.Bounds);
+            _centerX = _monitor.Left + _monitor.Width / 2;
+            _islandTop = _monitor.Top + DefaultTopMargin;
         }
         Relayout(animate: false);
     }
@@ -180,13 +190,17 @@ public partial class IslandWindow : Window
         return new Rect(r.Left / scale, r.Top / scale, r.Width / scale, r.Height / scale);
     }
 
-    // Đặt cửa sổ (trong suốt) sao cho nằm trọn trong màn hình, đảo dính mép trên tại _centerX.
+    // Đặt cửa sổ (trong suốt) sao cho nằm trọn trong màn hình và chứa được đảo khi mở rộng theo hướng phù hợp.
     private void Relayout(bool animate)
     {
-        var half = CollapsedWidth / 2 + Ear;
+        var half = CollapsedWidth / 2;
         _centerX = Math.Clamp(_centerX, _monitor.Left + half, Math.Max(_monitor.Left + half, _monitor.Right - half));
+        _islandTop = Math.Clamp(_islandTop, _monitor.Top, Math.Max(_monitor.Top, _monitor.Bottom - CollapsedHeight));
+        _growUp = _islandTop + CollapsedHeight / 2 > _monitor.Top + _monitor.Height / 2;
+
         Left = Math.Clamp(_centerX - Width / 2, _monitor.Left, Math.Max(_monitor.Left, _monitor.Right - Width));
-        Top = _monitor.Top;
+        var desiredTop = _growUp ? _islandTop + CollapsedHeight - Height : _islandTop;
+        Top = Math.Clamp(desiredTop, _monitor.Top, Math.Max(_monitor.Top, _monitor.Bottom - Height));
         ApplyState(animate);
     }
 
@@ -202,6 +216,7 @@ public partial class IslandWindow : Window
         e.Handled = true;
         _pressCursor = Forms.Cursor.Position;
         _pressCenterX = _centerX;
+        _pressTop = _islandTop;
         _dragging = false;
         _pressTimer.Start();
     }
@@ -237,6 +252,7 @@ public partial class IslandWindow : Window
         {
             _monitor = MonitorAtPixel(cursor);
             _centerX = _pressCenterX + dx / DpiScale;
+            _islandTop = _pressTop + (cursor.Y - _pressCursor.Y) / DpiScale;
             Relayout(animate: false);
         }
 
@@ -248,7 +264,7 @@ public partial class IslandWindow : Window
             _dragging = false;
             _vm.EndDrag();
             _settings.Current.IslandX = Math.Round(_centerX, 1);
-            _settings.Current.IslandY = Math.Round(_monitor.Top + 1, 1);
+            _settings.Current.IslandY = Math.Round(_islandTop, 1);
             _settings.Save();
         }
         else if (_vm.State != IslandState.Expanded && !_vm.ActivatePeek())
@@ -265,24 +281,31 @@ public partial class IslandWindow : Window
 
     private void ApplyState(bool animate)
     {
-        var (width, height, radius) = _vm.State switch
+        var (width, height) = _vm.State switch
         {
             // Gọn cỡ một cụm nút trên ribbon Revit.
-            IslandState.Expanded => (420.0, 120.0, 14.0),
-            IslandState.Peek => (340.0, 48.0, 12.0),
-            _ when _vm.LiveModule is not null => (300.0, 30.0, 10.0),
-            _ => (CollapsedWidth, 30.0, 10.0),
+            IslandState.Expanded => (420.0, 120.0),
+            IslandState.Peek => (340.0, 48.0),
+            _ when _vm.LiveModule is not null => (300.0, CollapsedHeight),
+            _ => (CollapsedWidth, CollapsedHeight),
         };
+        // Viên thuốc: thu gọn bo tròn hẳn hai đầu, mở rộng bo vừa phải.
+        var radius = _vm.State == IslandState.Expanded ? 20.0 : height / 2;
 
         // Đảo nở ra hai bên quanh tâm, nhưng bị đẩy vào trong nếu sát mép màn hình.
-        var outerWidth = width + 2 * Ear;
-        var anchor = _centerX - Left;
-        var x = Math.Clamp(anchor - outerWidth / 2, 0, Math.Max(0, Width - outerWidth));
+        var anchorX = _centerX - Left;
+        var x = Math.Clamp(anchorX - width / 2, 0, Math.Max(0, Width - width));
 
-        Body.CornerRadius = new CornerRadius(0, 0, radius, radius);
-        Animate(Island, WidthProperty, outerWidth, animate);
+        // Nở xuống từ mép trên, hoặc nở lên từ mép dưới khi đảo ở nửa dưới màn hình.
+        var top = _islandTop - Top;
+        var y = _growUp ? top + CollapsedHeight - height : top;
+        y = Math.Clamp(y, 0, Math.Max(0, Height - height));
+
+        Island.CornerRadius = new CornerRadius(radius);
+        Animate(Island, WidthProperty, width, animate);
         Animate(Island, HeightProperty, height, animate);
         Animate(Island, Canvas.LeftProperty, x, animate);
+        Animate(Island, Canvas.TopProperty, y, animate);
 
         ShowLayer(CompactLayer, _vm.State == IslandState.Collapsed, animate);
         ShowLayer(PeekLayer, _vm.State == IslandState.Peek, animate);
@@ -333,6 +356,7 @@ public partial class IslandWindow : Window
     {
         SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
         _pressTimer.Stop();
+        _topmostTimer.Stop();
         _fullscreen?.Dispose();
         ClipboardMonitor.Detach();
         base.OnClosed(e);

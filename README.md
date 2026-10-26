@@ -24,8 +24,9 @@ Không dùng tab nào thì thêm Id của nó vào `HiddenModules` trong cấu h
 
 Cách đảo hoạt động:
 
-- **Dạng tai thỏ** (như iPhone 13): dính sát mép trên màn hình, bo hai góc dưới.
-- **Kéo để dời chỗ**: nhấn giữ đảo rồi kéo sang trái/phải (hoặc sang màn hình khác). Vị trí được nhớ cho lần sau. Muốn về giữa thì chọn *Đưa đảo về giữa màn hình* ở khay hệ thống.
+- **Dạng viên thuốc** như Dynamic Island của iPhone.
+- **Kéo để dời chỗ**: nhấn giữ đảo rồi kéo tới bất cứ đâu, kể cả đặt lên taskbar. Đảo ở nửa dưới màn hình thì bảng mở rộng bung lên trên. Vị trí được nhớ cho lần sau; muốn về chỗ cũ thì chọn *Đưa đảo về giữa màn hình* ở khay hệ thống.
+- **Cập nhật**: mở bản mới là bản cũ tự tắt; đảo báo "Đã cập nhật lên bản …".
 - **Thu gọn**: hiện giờ và ngày. Khi đang phát nhạc hoặc đang chạy Pomodoro, đảo dài ra và hiện hoạt động đó (Pomodoro được ưu tiên).
 - **Mở rộng**: rê chuột vào đảo (hoặc bấm). Bảng mở rộng gọn cỡ một cụm nút trên ribbon Revit. Rời chuột ra thì tự thu lại.
 - **Báo tin**: đảo bung ra vài giây khi đổi bài, đổi âm lượng bằng phím, cắm/rút sạc, pin dưới 20% và 10%, hết giờ Pomodoro.
