@@ -65,8 +65,31 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <ListBox Style="{StaticResource TabList}" ItemsSource="{Binding Modules}"
-                                 SelectedItem="{Binding SelectedModule}" />
+                        <!--
+                            Tab là nút bấm chứ không dùng ListBox: ListBoxItem chỉ chọn được khi lấy được focus bàn phím,
+                            mà đảo cố ý không lấy focus (để Revit giữ focus), nên ListBox không đổi tab được.
+                        -->
+                        <ItemsControl ItemsSource="{Binding Modules}" Focusable="False">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource TabButton}" Content="{Binding Glyph}" ToolTip="{Binding Title}"
+                                            Command="{Binding DataContext.SelectModuleCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                            CommandParameter="{Binding}">
+                                        <Button.Tag>
+                                            <MultiBinding Converter="{StaticResource SameObject}">
+                                                <Binding />
+                                                <Binding Path="DataContext.SelectedModule" RelativeSource="{RelativeSource AncestorType=Window}" />
+                                            </MultiBinding>
+                                        </Button.Tag>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                         <ContentControl Grid.Row="1" Margin="0,6,0,0" Focusable="False"
                                         Content="{Binding SelectedModule.ExpandedView}" />
                     </Grid>

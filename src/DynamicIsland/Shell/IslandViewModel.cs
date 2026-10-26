@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DynamicIsland.Core;
 
 namespace DynamicIsland.Shell;
@@ -108,6 +109,12 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     {
         _holdOpen = hold;
         if (!hold && !_pointerInside && State == IslandState.Expanded) RestartHoverTimer(CollapseDelay);
+    }
+
+    [RelayCommand]
+    private void SelectModule(IIslandModule? module)
+    {
+        if (module is not null) SelectedModule = module;
     }
 
     /// <summary>Mở đảo ở tab của module có Id cho trước.</summary>
