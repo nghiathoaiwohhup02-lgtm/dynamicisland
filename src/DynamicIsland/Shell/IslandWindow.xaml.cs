@@ -26,8 +26,11 @@ public partial class IslandWindow : Window
     private readonly IslandViewModel _vm;
     private readonly SettingsStore _settings;
     private readonly DispatcherTimer _pressTimer = new() { Interval = TimeSpan.FromMilliseconds(15) };
-    // Taskbar cũng là cửa sổ "luôn ở trên"; bấm vào taskbar là nó đè lên đảo, nên định kỳ đưa đảo lên lại.
-    private readonly DispatcherTimer _topmostTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    // Taskbar cũng là cửa sổ "luôn ở trên": bấm vào taskbar (hay đổi cửa sổ) là nó đè lên đảo.
+    // Bắt sự kiện đổi cửa sổ phía trước để đưa đảo lên lại ngay; bộ đếm giờ chỉ để dự phòng.
+    private readonly DispatcherTimer _topmostTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
+    private readonly NativeMethods.WinEventProc _foregroundChanged;
+    private IntPtr _foregroundHook;
     private FullscreenWatcher? _fullscreen;
     private bool _hiddenByUser;
     private bool _hiddenByFullscreen;
@@ -53,8 +56,15 @@ public partial class IslandWindow : Window
         _settings = settings;
         _vm.PropertyChanged += OnViewModelChanged;
         _pressTimer.Tick += OnPressTick;
-        _topmostTimer.Tick += (_, _) => NativeMethods.BringToTopmost(new WindowInteropHelper(this).Handle);
+        _topmostTimer.Tick += (_, _) => BringToFront();
         _topmostTimer.Start();
+        // Giữ tham chiếu tới delegate, nếu không GC thu hồi sẽ làm sập ứng dụng khi Windows gọi lại.
+        _foregroundChanged = (_, _, _, _, _, _, _) =>
+        {
+            BringToFront();
+            // Taskbar có thể tự nâng mình lên ngay sau sự kiện; nâng đảo thêm một lần nữa.
+            Dispatcher.BeginInvoke(BringToFront, DispatcherPriority.Background);
+        };
 
         SourceInitialized += (_, _) =>
         {
@@ -64,6 +74,8 @@ public partial class IslandWindow : Window
             style |= NativeMethods.WS_EX_TOOLWINDOW | NativeMethods.WS_EX_NOACTIVATE;
             NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, new IntPtr(style));
             ClipboardMonitor.Attach(hwnd);
+            _foregroundHook = NativeMethods.SetWinEventHook(NativeMethods.EVENT_SYSTEM_FOREGROUND, NativeMethods.EVENT_SYSTEM_FOREGROUND,
+                IntPtr.Zero, _foregroundChanged, 0, 0, NativeMethods.WINEVENT_OUTOFCONTEXT);
 
             if (settings.Current.HideWhenFullscreen)
             {
@@ -137,6 +149,11 @@ public partial class IslandWindow : Window
         for (var current = element; current is not null; current = ParentOf(current))
             if (current is T) return true;
         return false;
+    }
+
+    private void BringToFront()
+    {
+        if (IsVisible) NativeMethods.BringToTopmost(new WindowInteropHelper(this).Handle);
     }
 
     public void ToggleUserVisibility()
@@ -357,6 +374,7 @@ public partial class IslandWindow : Window
         SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
         _pressTimer.Stop();
         _topmostTimer.Stop();
+        if (_foregroundHook != IntPtr.Zero) NativeMethods.UnhookWinEvent(_foregroundHook);
         _fullscreen?.Dispose();
         ClipboardMonitor.Detach();
         base.OnClosed(e);

@@ -20,23 +20,23 @@ public static class ModuleCatalog
     /// </summary>
     public static IReadOnlyList<IIslandModule> Create(AppSettings settings)
     {
+        // Tab bị ẩn thì không tạo module luôn: không chạy hẹn giờ, không đọc file, không tốn bộ nhớ.
         var hidden = new HashSet<string>(settings.HiddenModules, StringComparer.OrdinalIgnoreCase);
-        var all = new IIslandModule[]
-        {
-            new OverviewModule(),
-            new EmailReportModule(),
-            new MediaModule(),
-            new PomodoroModule(),
-            new SyncReminderModule(),
-            new WaterModule(),
-            new NotesModule(),
-            new FilesModule(),
-            new ClipboardModule(),
-            new SystemStatusModule(),
-            new QuickActionsModule(),
-        };
-
-        foreach (var module in all.Where(m => hidden.Contains(m.Id))) module.Dispose();
-        return all.Where(m => !hidden.Contains(m.Id)).ToList();
+        return All.Where(entry => !hidden.Contains(entry.Id)).Select(entry => entry.Create()).ToList();
     }
+
+    private static readonly (string Id, Func<IIslandModule> Create)[] All =
+    [
+        ("overview", () => new OverviewModule()),
+        ("report", () => new EmailReportModule()),
+        ("media", () => new MediaModule()),
+        ("pomodoro", () => new PomodoroModule()),
+        ("sync", () => new SyncReminderModule()),
+        ("water", () => new WaterModule()),
+        ("notes", () => new NotesModule()),
+        ("files", () => new FilesModule()),
+        ("clipboard", () => new ClipboardModule()),
+        ("system", () => new SystemStatusModule()),
+        ("quick", () => new QuickActionsModule()),
+    ];
 }
