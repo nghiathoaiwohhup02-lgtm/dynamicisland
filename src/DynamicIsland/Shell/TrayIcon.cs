@@ -25,6 +25,8 @@ internal sealed class TrayIcon : IDisposable
         };
 
         var menu = new Forms.ContextMenuStrip();
+        menu.Items.Add(new Forms.ToolStripMenuItem($"Dynamic Island {Version}") { Enabled = false });
+        menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Ẩn / hiện đảo", null, (_, _) => toggleVisible());
         menu.Items.Add("Đưa đảo về giữa màn hình", null, (_, _) => resetPosition());
         menu.Items.Add("Mở file cấu hình", null, (_, _) => OpenSettingsFile());
@@ -36,7 +38,7 @@ internal sealed class TrayIcon : IDisposable
         _icon = new Forms.NotifyIcon
         {
             Icon = _iconImage,
-            Text = "Dynamic Island",
+            Text = $"Dynamic Island {Version}",
             ContextMenuStrip = menu,
             Visible = true,
         };
@@ -45,6 +47,10 @@ internal sealed class TrayIcon : IDisposable
             if (e.Button == Forms.MouseButtons.Left) toggleVisible();
         };
     }
+
+    /// <summary>Phiên bản lấy từ &lt;Version&gt; trong DynamicIsland.csproj, vd. "0.3.0".</summary>
+    public static string Version { get; } =
+        typeof(TrayIcon).Assembly.GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "";
 
     public static void OpenSettingsFile()
     {
