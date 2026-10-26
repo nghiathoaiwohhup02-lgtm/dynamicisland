@@ -34,9 +34,9 @@ Cách đảo hoạt động:
 
 ## Chạy thử
 
-Cách nhanh nhất: vào mục **Releases** của repo, tải file `DynamicIsland-<phiên bản>.exe` mới nhất và chạy. File đã kèm .NET nên không cần cài gì thêm. Phiên bản đang chạy hiện ở dòng đầu menu khay hệ thống.
+Cách nhanh nhất: vào tab **Actions** → lần build mới nhất → mục **Artifacts**, tải `DynamicIsland-<phiên bản>-win-x64` rồi chạy file `.exe` bên trong. File đã kèm .NET nên không cần cài gì thêm. Phiên bản đang chạy hiện ở dòng đầu menu khay hệ thống.
 
-Phát hành bản mới: tăng `<Version>` trong `src/DynamicIsland/DynamicIsland.csproj`, rồi đẩy tag cùng số, vd. `v0.3.0`.
+Phát hành bản mới: tăng `<Version>` trong `src/DynamicIsland/DynamicIsland.csproj`. Nếu tạo tag cùng số (vd. `v0.3.0`, qua trang Releases của GitHub), workflow tự gắn file `.exe` vào trang Release đó.
 
 Tự build (cần [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) hoặc Visual Studio 2022):
 
