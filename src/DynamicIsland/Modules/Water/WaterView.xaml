@@ -10,30 +10,33 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!-- Hôm nay + điểm danh -->
-        <StackPanel Margin="0,0,12,0">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding TodayText}" Style="{StaticResource Text}" FontSize="20" FontWeight="Light" />
-                <TextBlock Text="lần hôm nay" Style="{StaticResource DimText}" FontSize="11" Margin="6,0,0,4" VerticalAlignment="Bottom" />
-            </StackPanel>
+        <!-- Hôm nay + điểm danh: nút nằm cùng hàng với số lần để bảng không bị cao quá. -->
+        <StackPanel Margin="0,0,12,0" VerticalAlignment="Center">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource PillButton}" Command="{Binding DrinkCommand}" Padding="10,3"
+                            Background="{StaticResource WaterBrush}" Foreground="#FF000000" FontWeight="SemiBold" Margin="0,0,4,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE73E;" FontFamily="{StaticResource IconFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,5,0" />
+                            <TextBlock Text="Đã uống" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}" Content="&#xE7A7;" Command="{Binding UndoCommand}" Width="24" Height="24" FontSize="10"
+                            ToolTip="Bỏ lần điểm danh gần nhất hôm nay" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding TodayText}" Style="{StaticResource Text}" FontSize="20" FontWeight="Light" />
+                    <TextBlock Text="lần hôm nay" Style="{StaticResource DimText}" FontSize="11" Margin="5,0,0,3" VerticalAlignment="Bottom" />
+                </StackPanel>
+            </DockPanel>
             <ProgressBar Style="{StaticResource ThinProgress}" Foreground="{StaticResource WaterBrush}"
-                         Value="{Binding TodayProgress, Mode=OneWay}" Margin="0,2,0,4" />
+                         Value="{Binding TodayProgress, Mode=OneWay}" Margin="0,6,0,6" />
             <TextBlock Text="{Binding NextText}" Style="{StaticResource DimText}" FontSize="10" ToolTip="{Binding StreakText}" />
-            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                <Button Style="{StaticResource PillButton}" Command="{Binding DrinkCommand}"
-                        Background="{StaticResource WaterBrush}" Foreground="#FF000000" FontWeight="SemiBold" Margin="0,0,6,0" Padding="10,3">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE73E;" FontFamily="{StaticResource IconFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,5,0" />
-                        <TextBlock Text="Đã uống" VerticalAlignment="Center" />
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource IconButton}" Content="&#xE7A7;" Command="{Binding UndoCommand}" Width="26" Height="26" FontSize="11"
-                        ToolTip="Bỏ lần điểm danh gần nhất hôm nay" />
-            </StackPanel>
+            <TextBlock Text="{Binding StreakText}" Style="{StaticResource DimText}" FontSize="10" Margin="0,2,0,0" />
         </StackPanel>
 
         <!-- 7 ngày gần nhất -->
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Week}" VerticalAlignment="Bottom" ToolTip="{Binding StreakText}">
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Week}" VerticalAlignment="Center" ToolTip="{Binding StreakText}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -41,9 +44,9 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Width="24" ToolTip="{Binding Count}">
+                    <StackPanel Width="22" ToolTip="{Binding Count}">
                         <TextBlock Text="{Binding Count}" Style="{StaticResource DimText}" FontSize="9" HorizontalAlignment="Center" />
-                        <Grid Height="40">
+                        <Grid Height="36">
                             <Border x:Name="Bar" Width="10" Height="{Binding BarHeight}" CornerRadius="3" VerticalAlignment="Bottom"
                                     Background="{StaticResource SurfaceHoverBrush}" />
                         </Grid>
