@@ -6,7 +6,7 @@ namespace DynamicIsland.Core;
 /// <summary>
 /// Một tiện ích trên đảo. Mỗi module tự lo dữ liệu của mình và cung cấp hai giao diện:
 /// giao diện mở rộng (khi rê chuột vào đảo) và, nếu có hoạt động đang diễn ra, giao diện thu gọn.
-/// Muốn thêm tiện ích mới (vd. Outlook/Teams) chỉ cần viết một lớp kế thừa <see cref="IslandModule"/>
+/// Muốn thêm tiện ích mới chỉ cần viết một lớp kế thừa <see cref="IslandModule"/>
 /// rồi đăng ký trong <see cref="ModuleCatalog"/>.
 /// </summary>
 public interface IIslandModule : INotifyPropertyChanged, IDisposable

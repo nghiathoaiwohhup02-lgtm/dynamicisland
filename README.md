@@ -7,8 +7,6 @@ Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island củ
 | Tab (Id) | Chức năng |
 | --- | --- |
 | Tổng quan (`overview`) | Đồng hồ, ngày, thời tiết hiện tại và 3 ngày tới (Open-Meteo, không cần API key). |
-| Outlook (`outlook`) | Cuộc họp kế tiếp, nhắc trước 5 phút (bấm vào thông báo là vào Teams), số thư chưa đọc, 3 thư mới nhất (bấm để mở). Đọc từ Outlook bản cổ điển đang chạy, không cần IT cấp quyền; chỉ đọc. |
-| Teams (`teams`) | Khi đang họp: bật/tắt mic, camera ngay trên đảo thu gọn; giơ tay, rời họp. Cần bật trong Teams: Cài đặt → Quyền riêng tư → Quản lý API → Bật API, rồi bấm Cho phép khi Teams hỏi lần đầu. |
 | Báo cáo email (`report`) | Khi file báo cáo buổi sáng của hôm nay (`bao-cao-yyyy-MM-dd.html`) xuất hiện trong thư mục `Bao-cao-email`, đảo báo; bấm vào là mở trên trình duyệt. |
 | Nhạc (`media`) | Tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
 | Pomodoro (`pomodoro`) | 25 phút tập trung, 5 phút nghỉ, sau 4 vòng nghỉ 15 phút. Có âm báo khi hết giờ. |
@@ -68,7 +66,6 @@ File `%AppData%\DynamicIsland\settings.json` được tạo ở lần chạy đ�
   "PomodoroRoundsBeforeLongBreak": 4,
   "HiddenModules": [],               // vd. ["media", "system"]
   "EmailReportFolder": "%USERPROFILE%\\Bao-cao-email",
-  "MeetingReminderMinutes": 5,
   "SyncReminderMinutes": 30,         // 0 = tắt nhắc Sync
   "WaterReminderMinutes": 60,        // 0 = tắt nhắc uống nước
   "WaterGoalPerDay": 8,
@@ -102,19 +99,17 @@ src/DynamicIsland/
     QuickActions/        nút nhanh
     SyncReminder/        nhắc Sync with Central (đọc journal Revit)
     Water/               nhắc uống nước + thống kê
-    Outlook/             lịch họp + thư chưa đọc (COM, chỉ đọc)
-    Teams/               mic/camera qua API cục bộ của Teams
     EmailReport/         báo cáo email buổi sáng
     Files/               khay file + OneDrive
     Clipboard/           lịch sử clipboard
     Notes/               ghi chú + việc cần làm
 ```
 
-Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module mới (vd. Outlook/Teams) ở [docs/them-module.md](docs/them-module.md).
+Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module mới ở [docs/them-module.md](docs/them-module.md).
 
 ## Lộ trình
 
 - **0.1**: thanh co giãn, đồng hồ/thời tiết, nhạc, pin/âm lượng, Pomodoro, nút nhanh.
-- **0.2**: Outlook/Teams, báo cáo email buổi sáng.
+- **0.2**: báo cáo email buổi sáng (phần Outlook/Teams đã bỏ theo yêu cầu).
 - **0.3**: khay file, OneDrive, lịch sử clipboard, ghi chú, việc cần làm.
 - Thêm: nhắc Sync with Central, nhắc uống nước.

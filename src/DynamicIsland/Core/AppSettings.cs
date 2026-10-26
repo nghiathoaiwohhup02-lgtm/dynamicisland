@@ -29,12 +29,6 @@ public sealed class AppSettings
     /// <summary>Ngày đã mở báo cáo, để không nhắc lại sau khi khởi động lại.</summary>
     public DateTime? EmailReportOpenedOn { get; set; }
 
-    /// <summary>Nhắc trước giờ họp (phút).</summary>
-    public int MeetingReminderMinutes { get; set; } = 5;
-
-    /// <summary>Mã ghép nối Teams (tự lưu sau lần cho phép đầu tiên trong Teams).</summary>
-    public string? TeamsToken { get; set; }
-
     /// <summary>Nhắc Sync with Central khi Revit đang mở. 0 = tắt.</summary>
     public int SyncReminderMinutes { get; set; } = 30;
 

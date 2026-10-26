@@ -3,13 +3,11 @@ using DynamicIsland.Modules.EmailReport;
 using DynamicIsland.Modules.Files;
 using DynamicIsland.Modules.Media;
 using DynamicIsland.Modules.Notes;
-using DynamicIsland.Modules.Outlook;
 using DynamicIsland.Modules.Overview;
 using DynamicIsland.Modules.Pomodoro;
 using DynamicIsland.Modules.QuickActions;
 using DynamicIsland.Modules.SyncReminder;
 using DynamicIsland.Modules.SystemStatus;
-using DynamicIsland.Modules.Teams;
 using DynamicIsland.Modules.Water;
 
 namespace DynamicIsland.Core;
@@ -26,8 +24,6 @@ public static class ModuleCatalog
         var all = new IIslandModule[]
         {
             new OverviewModule(),
-            new OutlookModule(),
-            new TeamsModule(),
             new EmailReportModule(),
             new MediaModule(),
             new PomodoroModule(),

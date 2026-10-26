@@ -1,6 +1,6 @@
 # Thêm một module mới
 
-Ví dụ dưới đây là khung cho module Outlook/Teams của bản 0.2.
+Ví dụ dưới đây là khung cho một module lịch họp.
 
 ## 1. Lớp module
 
