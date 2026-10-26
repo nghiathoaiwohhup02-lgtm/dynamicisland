@@ -12,12 +12,12 @@ namespace DynamicIsland.Modules.Media;
 /// <summary>
 /// Điều khiển nhạc qua System Media Transport Controls của Windows: dùng được với Spotify,
 /// YouTube trên Edge/Chrome, Groove, VLC... (ứng dụng nào hiện trong bảng âm lượng của Windows).
+/// Thu gọn chỉ hiện sóng nhạc cho kín đáo; tên bài, ca sĩ, ảnh bìa chỉ hiện khi mở ra.
 /// </summary>
 public sealed partial class MediaModule : IslandModule
 {
     private GlobalSystemMediaTransportControlsSessionManager? _manager;
     private MediaSession? _session;
-    private string? _lastTrackKey;
 
     [ObservableProperty] private bool _hasSession;
     [ObservableProperty] private bool _isPlaying;
@@ -69,7 +69,6 @@ public sealed partial class MediaModule : IslandModule
             TrackTitle = "Không có nhạc đang phát";
             Artist = Source = "";
             Artwork = null;
-            _lastTrackKey = null;
             return;
         }
 
@@ -105,11 +104,7 @@ public sealed partial class MediaModule : IslandModule
             Artist = props.Artist ?? "";
             Artwork = props.Thumbnail is null ? null : await LoadThumbnailAsync(props.Thumbnail);
 
-            // Báo bài mới khi đang thu gọn.
-            var key = $"{props.Title}|{props.Artist}";
-            if (_lastTrackKey is not null && key != _lastTrackKey && IsPlaying)
-                Peek("\uE8D6", TrackTitle, Artist, seconds: 2.5);
-            _lastTrackKey = key;
+            // Không báo khi đổi bài: thông báo hiện ở chế độ thu gọn sẽ lộ tên bài.
         }
         catch (Exception ex)
         {

@@ -1,14 +1,8 @@
 <UserControl x:Class="DynamicIsland.Modules.Media.MediaCompactView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StackPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding TrackTitle}" Style="{StaticResource DimText}" MaxWidth="170" VerticalAlignment="Center" />
-        <Border Width="22" Height="22" CornerRadius="6" Margin="10,0,0,0" Background="{StaticResource SurfaceBrush}">
-            <Border CornerRadius="6">
-                <Border.Background>
-                    <ImageBrush ImageSource="{Binding Artwork}" Stretch="UniformToFill" />
-                </Border.Background>
-            </Border>
-        </Border>
-    </StackPanel>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:media="clr-namespace:DynamicIsland.Modules.Media">
+    <!-- Chỉ có sóng nhạc: không hiện tên bài, ca sĩ hay ảnh bìa. -->
+    <media:EqualizerBars Height="14" BarCount="4" BarWidth="3" VerticalAlignment="Center"
+                         BarBrush="{StaticResource AccentBrush}" IsActive="{Binding IsPlaying}" />
 </UserControl>

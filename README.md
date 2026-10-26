@@ -8,7 +8,7 @@ Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island củ
 | --- | --- |
 | Tổng quan (`overview`) | Đồng hồ, ngày, thời tiết hiện tại và 3 ngày tới (Open-Meteo, không cần API key). |
 | Báo cáo email (`report`) | Khi file báo cáo buổi sáng của hôm nay (`bao-cao-yyyy-MM-dd.html`) xuất hiện trong thư mục `Bao-cao-email`, đảo báo; bấm vào là mở trên trình duyệt. |
-| Nhạc (`media`) | Tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
+| Nhạc (`media`) | Thu gọn chỉ hiện sóng nhạc cho kín đáo. Mở ra mới thấy tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Không báo khi đổi bài. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
 | Pomodoro (`pomodoro`) | 25 phút tập trung, 5 phút nghỉ, sau 4 vòng nghỉ 15 phút. Có âm báo khi hết giờ. |
 | Nhắc Sync (`sync`) | Khi Revit đang mở, cứ 30 phút chưa Sync with Central thì đảo báo và chuyển đỏ. Tự nhận biết lần sync bằng cách **chỉ đọc** file journal của Revit; không mở file .rvt, không cần add-in, không tác động gì tới Revit. |
 | Uống nước (`water`) | Nhắc mỗi 60 phút trong giờ làm. Bấm "Đã uống" để điểm danh; thống kê hôm nay, 7 ngày, chuỗi ngày đạt mục tiêu. Dữ liệu ở `water.csv`. |
