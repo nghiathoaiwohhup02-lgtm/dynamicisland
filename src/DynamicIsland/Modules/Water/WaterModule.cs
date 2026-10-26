@@ -34,6 +34,7 @@ public sealed partial class WaterModule : IslandModule
     public override string Title => "Uống nước";
     public override string Glyph => "\uEB42";
     public override int LivePriority => 30;
+    public override bool CanPinCompact => true;
 
     public ObservableCollection<WaterDay> Week { get; } = [];
 

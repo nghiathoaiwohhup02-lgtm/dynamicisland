@@ -30,6 +30,7 @@ public sealed partial class MediaModule : IslandModule
     public override string Title => "Nhạc";
     public override string Glyph => "\uE8D6";
     public override int LivePriority => 10;
+    public override bool CanPinCompact => true;
 
     public string PlayPauseGlyph => IsPlaying ? "\uE769" : "\uE768";
 

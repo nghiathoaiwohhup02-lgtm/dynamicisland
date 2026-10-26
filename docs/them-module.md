@@ -32,6 +32,7 @@ public sealed partial class MeetingsModule : IslandModule
 Những gì lớp cơ sở lo sẵn:
 
 - `IsLive = true` → đảo thu gọn hiện `CompactView` của module (module có `LivePriority` cao nhất thắng).
+- `CanPinCompact = true` → người dùng bấm chọn tab này thì khi thu gọn đảo vẫn hiện `CompactView` của nó (lưu trong `PinnedModule`), trừ khi module khác đang live với `LivePriority` cao hơn. Bấm tab không có cờ này thì bỏ ghim.
 - `Peek(glyph, title, message, seconds, playSound)` → đảo bung ra vài giây để báo tin, vd. "Họp sau 5 phút".
 - `OnUi(...)` → đưa việc về luồng giao diện khi sự kiện đến từ luồng khác.
 - Giao diện được tạo một lần, `DataContext` là chính module nên XAML bind thẳng vào thuộc tính.

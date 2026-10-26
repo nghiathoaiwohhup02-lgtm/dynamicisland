@@ -22,6 +22,9 @@ public sealed class AppSettings
     /// <summary>Id các tab muốn ẩn, vd. ["media", "water"]. Xem Id trong README.</summary>
     public List<string> HiddenModules { get; set; } = [];
 
+    /// <summary>Tab đã chọn lần cuối có giao diện thu gọn (vd. "water"): thu gọn vẫn hiện tab đó.</summary>
+    public string? PinnedModule { get; set; }
+
     /// <summary>Thư mục chứa báo cáo email buổi sáng (bao-cao-yyyy-MM-dd.html).</summary>
     public string EmailReportFolder { get; set; } = @"%USERPROFILE%\Bao-cao-email";
     public string EmailReportFilePattern { get; set; } = "bao-cao-{0:yyyy-MM-dd}.html";

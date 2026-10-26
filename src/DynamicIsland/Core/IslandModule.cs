@@ -18,6 +18,8 @@ public abstract partial class IslandModule : ObservableObject, IIslandModule
     public abstract string Glyph { get; }
     public virtual int LivePriority => 0;
 
+    public virtual bool CanPinCompact => false;
+
     protected IslandContext Context { get; private set; } = null!;
 
     public FrameworkElement ExpandedView => _expandedView ??= Bind(CreateExpandedView());

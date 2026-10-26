@@ -23,6 +23,9 @@ public interface IIslandModule : INotifyPropertyChanged, IDisposable
     /// <summary>Khi nhiều module cùng "live", module có độ ưu tiên cao hơn được hiện ở dạng thu gọn.</summary>
     int LivePriority { get; }
 
+    /// <summary>Giao diện thu gọn vẫn có nghĩa khi không "live": bấm chọn tab thì thu gọn vẫn hiện tab này.</summary>
+    bool CanPinCompact { get; }
+
     FrameworkElement ExpandedView { get; }
     FrameworkElement? CompactView { get; }
 

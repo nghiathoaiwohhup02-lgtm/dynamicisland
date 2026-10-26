@@ -28,6 +28,13 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     private bool _pointerInside;
     private bool _dragging;
     private bool _holdOpen;
+    private readonly SettingsStore? _settings;
+
+    /// <summary>
+    /// Tab người dùng bấm chọn lần cuối mà có giao diện thu gọn (vd. Uống nước):
+    /// khi thu gọn đảo vẫn hiện tab đó, trừ khi có hoạt động ưu tiên cao hơn (nhắc Sync, báo cáo email).
+    /// </summary>
+    private IIslandModule? _pinnedModule;
 
     [ObservableProperty]
     private IslandState _state = IslandState.Collapsed;
@@ -47,10 +54,11 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private string _dateText = "";
 
-    public IslandViewModel(IReadOnlyList<IIslandModule> modules)
+    public IslandViewModel(IReadOnlyList<IIslandModule> modules, SettingsStore? settings = null)
     {
         Modules = new ObservableCollection<IIslandModule>(modules);
         SelectedModule = Modules.FirstOrDefault();
+        _settings = settings;
 
         foreach (var module in Modules)
         {
@@ -85,6 +93,8 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
                 Log.Error($"Module {module.Id} khởi tạo lỗi", ex);
             }
         }
+        if (_settings?.Current.PinnedModule is { } pinnedId)
+            _pinnedModule = Modules.FirstOrDefault(m => m.Id == pinnedId && m.CanPinCompact && m.CompactView is not null);
         UpdateLiveModule();
     }
 
@@ -114,7 +124,19 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private void SelectModule(IIslandModule? module)
     {
-        if (module is not null) SelectedModule = module;
+        if (module is null) return;
+        SelectedModule = module;
+        Pin(module.CanPinCompact && module.CompactView is not null ? module : null);
+    }
+
+    private void Pin(IIslandModule? module)
+    {
+        if (module == _pinnedModule) return;
+        _pinnedModule = module;
+        UpdateLiveModule();
+        if (_settings is null) return;
+        _settings.Current.PinnedModule = module?.Id;
+        _settings.Save();
     }
 
     /// <summary>Mở đảo ở tab của module có Id cho trước.</summary>
@@ -215,10 +237,15 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
         if (e.PropertyName == nameof(IIslandModule.IsLive)) UpdateLiveModule();
     }
 
-    private void UpdateLiveModule() =>
-        LiveModule = Modules.Where(m => m.IsLive && m.CompactView is not null)
-                            .OrderByDescending(m => m.LivePriority)
-                            .FirstOrDefault();
+    private void UpdateLiveModule()
+    {
+        var live = Modules.Where(m => m.IsLive && m.CompactView is not null)
+                          .OrderByDescending(m => m.LivePriority)
+                          .FirstOrDefault();
+        LiveModule = _pinnedModule is not null && (live is null || live.LivePriority <= _pinnedModule.LivePriority)
+            ? _pinnedModule
+            : live;
+    }
 
     private static readonly CultureInfo Vietnamese = CultureInfo.GetCultureInfo("vi-VN");
 

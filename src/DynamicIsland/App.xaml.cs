@@ -41,7 +41,7 @@ public partial class App : Application
         var context = new IslandContext(settings, _http, Dispatcher);
 
         // Khởi tạo module trước khi hiện cửa sổ để giao diện không gắn vào module chưa sẵn sàng.
-        _viewModel = new IslandViewModel(ModuleCatalog.Create(settings.Current));
+        _viewModel = new IslandViewModel(ModuleCatalog.Create(settings.Current), settings);
         await _viewModel.InitializeAsync(context);
 
         _window = new IslandWindow(_viewModel, settings);

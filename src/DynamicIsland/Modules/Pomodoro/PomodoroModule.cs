@@ -31,6 +31,7 @@ public sealed partial class PomodoroModule : IslandModule
     public override string Title => "Pomodoro";
     public override string Glyph => "\uE916";
     public override int LivePriority => 20;
+    public override bool CanPinCompact => true;
 
     private AppSettings S => Context.Settings.Current;
 
