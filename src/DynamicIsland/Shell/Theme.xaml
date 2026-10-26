@@ -37,20 +37,25 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <!--
+        Các nút dùng ClickMode="Press": bấm là chạy ngay khi nhấn chuột. Đảo không lấy focus (để Revit giữ focus),
+        nên Windows có thể không cho cửa sổ "giữ" chuột tới lúc nhả, khiến kiểu bấm mặc định (khi nhả) không chạy.
+    -->
     <!-- Nút tròn chỉ có biểu tượng (play, next...). Content là ký tự MDL2. -->
     <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="ClickMode" Value="Press" />
         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
         <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
-        <Setter Property="FontSize" Value="16" />
-        <Setter Property="Width" Value="38" />
-        <Setter Property="Height" Value="38" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Width" Value="30" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="19">
+                    <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="15">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -70,20 +75,21 @@
     </Style>
 
     <Style x:Key="BigIconButton" TargetType="Button" BasedOn="{StaticResource IconButton}">
-        <Setter Property="Width" Value="48" />
-        <Setter Property="Height" Value="48" />
-        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="Background" Value="#FFF5F5F7" />
         <Setter Property="Foreground" Value="#FF000000" />
     </Style>
 
     <!-- Nút chữ dạng viên thuốc (Bắt đầu, Đặt lại...). -->
     <Style x:Key="PillButton" TargetType="Button">
+        <Setter Property="ClickMode" Value="Press" />
         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
         <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="Padding" Value="12,5" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
@@ -105,20 +111,21 @@
         </Setter>
     </Style>
 
-    <!-- Ô vuông cho nút nhanh: biểu tượng trên, tên dưới. -->
+    <!-- Ô cho nút nhanh: biểu tượng bên trái, tên bên phải; 4 ô một hàng. -->
     <Style x:Key="TileButton" TargetType="Button">
+        <Setter Property="ClickMode" Value="Press" />
         <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
         <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
-        <Setter Property="Width" Value="74" />
-        <Setter Property="Height" Value="64" />
-        <Setter Property="Margin" Value="0,0,8,8" />
+        <Setter Property="Width" Value="95" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Margin" Value="0,0,4,4" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="14">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="10" Padding="8,0">
+                        <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -152,8 +159,8 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <Border x:Name="Bg" Background="Transparent" CornerRadius="13" Width="34" Height="26" Margin="0,0,4,0">
-                                    <TextBlock x:Name="Icon" Text="{Binding Glyph}" Style="{StaticResource Glyph}" FontSize="14"
+                                <Border x:Name="Bg" Background="Transparent" CornerRadius="10" Width="30" Height="22" Margin="0,0,2,0">
+                                    <TextBlock x:Name="Icon" Text="{Binding Glyph}" Style="{StaticResource Glyph}" FontSize="12"
                                                HorizontalAlignment="Center" Foreground="{StaticResource TextDimBrush}" />
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -180,14 +187,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
-                    <Grid Height="22" Background="Transparent">
-                        <Border Height="6" CornerRadius="3" Background="{StaticResource SurfaceHoverBrush}" VerticalAlignment="Center" />
+                    <Grid Height="18" Background="Transparent">
+                        <Border Height="4" CornerRadius="2" Background="{StaticResource SurfaceHoverBrush}" VerticalAlignment="Center" />
                         <Track x:Name="PART_Track" VerticalAlignment="Center">
                             <Track.DecreaseRepeatButton>
                                 <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
                                     <RepeatButton.Template>
                                         <ControlTemplate TargetType="RepeatButton">
-                                            <Border Height="6" CornerRadius="3,0,0,3" Background="{StaticResource TextBrush}" />
+                                            <Border Height="4" CornerRadius="2,0,0,2" Background="{StaticResource TextBrush}" />
                                         </ControlTemplate>
                                     </RepeatButton.Template>
                                 </RepeatButton>
@@ -205,7 +212,7 @@
                                 <Thumb Focusable="False">
                                     <Thumb.Template>
                                         <ControlTemplate TargetType="Thumb">
-                                            <Ellipse Width="14" Height="14" Fill="{StaticResource TextBrush}" />
+                                            <Ellipse Width="12" Height="12" Fill="{StaticResource TextBrush}" />
                                         </ControlTemplate>
                                     </Thumb.Template>
                                 </Thumb>

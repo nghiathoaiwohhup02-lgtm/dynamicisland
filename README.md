@@ -14,11 +14,13 @@ Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island củ
 
 Cách đảo hoạt động:
 
+- **Dạng tai thỏ** (như iPhone 13): dính sát mép trên màn hình, bo hai góc dưới.
+- **Kéo để dời chỗ**: nhấn giữ đảo rồi kéo sang trái/phải (hoặc sang màn hình khác). Vị trí được nhớ cho lần sau. Muốn về giữa thì chọn *Đưa đảo về giữa màn hình* ở khay hệ thống.
 - **Thu gọn**: hiện giờ và ngày. Khi đang phát nhạc hoặc đang chạy Pomodoro, đảo dài ra và hiện hoạt động đó (Pomodoro được ưu tiên).
-- **Mở rộng**: rê chuột vào đảo (hoặc bấm). Rời chuột ra thì tự thu lại.
+- **Mở rộng**: rê chuột vào đảo (hoặc bấm). Bảng mở rộng gọn cỡ một cụm nút trên ribbon Revit. Rời chuột ra thì tự thu lại.
 - **Báo tin**: đảo bung ra vài giây khi đổi bài, đổi âm lượng bằng phím, cắm/rút sạc, pin dưới 20% và 10%, hết giờ Pomodoro.
 - Đảo không lấy focus khi bấm (đang gõ trong Revit vẫn giữ nguyên), không hiện trong Alt+Tab, và tự ẩn khi có ứng dụng toàn màn hình (trình chiếu PowerPoint, xem video).
-- Biểu tượng ở khay hệ thống: ẩn/hiện đảo, mở file cấu hình, khởi động lại, khởi động cùng Windows, thoát.
+- Biểu tượng ở khay hệ thống: ẩn/hiện đảo, đưa đảo về giữa, mở file cấu hình, khởi động lại, khởi động cùng Windows, thoát.
 
 ## Chạy thử
 

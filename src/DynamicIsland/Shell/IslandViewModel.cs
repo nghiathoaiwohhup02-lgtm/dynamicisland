@@ -25,6 +25,7 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     private readonly DispatcherTimer _hoverTimer;
     private readonly DispatcherTimer _peekTimer;
     private bool _pointerInside;
+    private bool _dragging;
 
     [ObservableProperty]
     private IslandState _state = IslandState.Collapsed;
@@ -88,6 +89,7 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     public void PointerEntered()
     {
         _pointerInside = true;
+        if (_dragging) return;
         if (State == IslandState.Expanded) _hoverTimer.Stop();
         else RestartHoverTimer(ExpandDelay);
     }
@@ -98,6 +100,16 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
         if (State == IslandState.Expanded) RestartHoverTimer(CollapseDelay);
         else _hoverTimer.Stop();
     }
+
+    /// <summary>Đang kéo đảo đi chỗ khác: thu gọn và không tự mở ra.</summary>
+    public void BeginDrag()
+    {
+        _dragging = true;
+        _hoverTimer.Stop();
+        if (State == IslandState.Expanded) State = IslandState.Collapsed;
+    }
+
+    public void EndDrag() => _dragging = false;
 
     public void ToggleExpanded()
     {

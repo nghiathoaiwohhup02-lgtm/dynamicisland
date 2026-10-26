@@ -9,20 +9,18 @@
 
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding PhaseText}" Style="{StaticResource Text}" FontWeight="SemiBold" />
-                <TextBlock Text="{Binding RoundText}" Style="{StaticResource DimText}" Margin="10,0,0,0" VerticalAlignment="Bottom" />
+                <TextBlock Text="{Binding PhaseText}" Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding RoundText}" Style="{StaticResource DimText}" FontSize="11" Margin="8,0,0,0" VerticalAlignment="Bottom" />
             </StackPanel>
-            <TextBlock Text="{Binding RemainingText}" Style="{StaticResource Text}" FontSize="58" FontWeight="Light" />
-            <ProgressBar x:Name="Bar" Style="{StaticResource ThinProgress}" Value="{Binding Progress, Mode=OneWay}" Margin="0,4,24,0" />
+            <TextBlock Text="{Binding RemainingText}" Style="{StaticResource Text}" FontSize="34" FontWeight="Light" />
+            <ProgressBar Style="{StaticResource ThinProgress}" Value="{Binding Progress, Mode=OneWay}" Margin="0,2,16,0" />
         </StackPanel>
 
-        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
             <Button Style="{StaticResource PillButton}" Content="{Binding StartPauseText}" Command="{Binding StartPauseCommand}"
-                    Background="{StaticResource OrangeBrush}" Foreground="#FF000000" FontWeight="SemiBold" Width="120" Margin="0,0,0,8" />
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Style="{StaticResource IconButton}" Content="&#xE72C;" Command="{Binding ResetCommand}" ToolTip="Đặt lại" Margin="0,0,8,0" />
-                <Button Style="{StaticResource IconButton}" Content="&#xE893;" Command="{Binding SkipCommand}" ToolTip="Bỏ qua giai đoạn này" />
-            </StackPanel>
+                    Background="{StaticResource OrangeBrush}" Foreground="#FF000000" FontWeight="SemiBold" MinWidth="84" Margin="0,0,6,0" />
+            <Button Style="{StaticResource IconButton}" Content="&#xE72C;" Command="{Binding ResetCommand}" ToolTip="Đặt lại" Margin="0,0,6,0" />
+            <Button Style="{StaticResource IconButton}" Content="&#xE893;" Command="{Binding SkipCommand}" ToolTip="Bỏ qua giai đoạn này" />
         </StackPanel>
     </Grid>
 </UserControl>

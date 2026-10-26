@@ -1,9 +1,15 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
+using DynamicIsland.Core;
 using Microsoft.Win32;
+using Forms = System.Windows.Forms;
 
 namespace DynamicIsland.Shell;
 
@@ -12,16 +18,33 @@ public partial class IslandWindow : Window
     private static readonly Duration Morph = new(TimeSpan.FromMilliseconds(380));
     private static readonly Duration Fade = new(TimeSpan.FromMilliseconds(180));
 
+    // Bề rộng mỗi "vành" lõm hai bên tai thỏ, khớp với hai Path trong XAML.
+    private const double Ear = 8;
+    private const double CollapsedWidth = 200;
+    private const int DragThresholdPx = 4;
+
     private readonly IslandViewModel _vm;
+    private readonly SettingsStore _settings;
+    private readonly DispatcherTimer _pressTimer = new() { Interval = TimeSpan.FromMilliseconds(15) };
     private FullscreenWatcher? _fullscreen;
     private bool _hiddenByUser;
     private bool _hiddenByFullscreen;
 
-    public IslandWindow(IslandViewModel vm, bool hideWhenFullscreen)
+    // Vị trí tâm đảo theo chiều ngang và màn hình đang chứa đảo, đơn vị DIP.
+    private double _centerX;
+    private Rect _monitor;
+
+    private System.Drawing.Point _pressCursor;
+    private double _pressCenterX;
+    private bool _dragging;
+
+    public IslandWindow(IslandViewModel vm, SettingsStore settings)
     {
         InitializeComponent();
         DataContext = _vm = vm;
+        _settings = settings;
         _vm.PropertyChanged += OnViewModelChanged;
+        _pressTimer.Tick += OnPressTick;
 
         SourceInitialized += (_, _) =>
         {
@@ -31,7 +54,7 @@ public partial class IslandWindow : Window
             style |= NativeMethods.WS_EX_TOOLWINDOW | NativeMethods.WS_EX_NOACTIVATE;
             NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, new IntPtr(style));
 
-            if (hideWhenFullscreen)
+            if (settings.Current.HideWhenFullscreen)
             {
                 _fullscreen = new FullscreenWatcher(hwnd);
                 _fullscreen.FullscreenChanged += (_, isFullscreen) =>
@@ -43,11 +66,7 @@ public partial class IslandWindow : Window
             }
         };
 
-        Loaded += (_, _) =>
-        {
-            PlaceOnScreen();
-            ApplyState(animate: false);
-        };
+        Loaded += (_, _) => RestorePosition();
         SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
     }
 
@@ -57,50 +76,153 @@ public partial class IslandWindow : Window
         UpdateVisibility();
     }
 
+    /// <summary>Đưa đảo về giữa mép trên màn hình chính và quên vị trí đã kéo.</summary>
+    public void ResetPosition()
+    {
+        _settings.Current.IslandX = null;
+        _settings.Current.IslandY = null;
+        _settings.Save();
+        RestorePosition();
+    }
+
     private void UpdateVisibility()
     {
         if (_hiddenByUser || _hiddenByFullscreen) Hide();
         else Show();
     }
 
-    private void OnDisplaySettingsChanged(object? sender, EventArgs e) => Dispatcher.BeginInvoke(PlaceOnScreen);
+    private double DpiScale => VisualTreeHelper.GetDpi(this).DpiScaleX;
 
-    // Giữa mép trên màn hình chính.
-    private void PlaceOnScreen()
+    private void OnDisplaySettingsChanged(object? sender, EventArgs e) => Dispatcher.BeginInvoke(RestorePosition);
+
+    private void RestorePosition()
     {
-        Left = (SystemParameters.PrimaryScreenWidth - Width) / 2;
-        Top = 0;
+        var s = _settings.Current;
+        var primary = ToDip(Forms.Screen.PrimaryScreen!.Bounds);
+        if (s.IslandX is double x && s.IslandY is double y)
+        {
+            _monitor = MonitorAtPixel(new System.Drawing.Point((int)(x * DpiScale), (int)(y * DpiScale)));
+            _centerX = x;
+        }
+        else
+        {
+            _monitor = primary;
+            _centerX = primary.Left + primary.Width / 2;
+        }
+        Relayout(animate: false);
+    }
+
+    private Rect MonitorAtPixel(System.Drawing.Point point) => ToDip(Forms.Screen.FromPoint(point).Bounds);
+
+    private Rect ToDip(System.Drawing.Rectangle r)
+    {
+        var scale = DpiScale;
+        return new Rect(r.Left / scale, r.Top / scale, r.Width / scale, r.Height / scale);
+    }
+
+    // Đặt cửa sổ (trong suốt) sao cho nằm trọn trong màn hình, đảo dính mép trên tại _centerX.
+    private void Relayout(bool animate)
+    {
+        var half = CollapsedWidth / 2 + Ear;
+        _centerX = Math.Clamp(_centerX, _monitor.Left + half, Math.Max(_monitor.Left + half, _monitor.Right - half));
+        Left = Math.Clamp(_centerX - Width / 2, _monitor.Left, Math.Max(_monitor.Left, _monitor.Right - Width));
+        Top = _monitor.Top;
+        ApplyState(animate);
     }
 
     private void Island_MouseEnter(object sender, MouseEventArgs e) => _vm.PointerEntered();
 
     private void Island_MouseLeave(object sender, MouseEventArgs e) => _vm.PointerLeft();
 
-    private void Island_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    // Nhấn chuột lên nền đảo (không phải nút): nhả ngay là mở đảo, giữ và kéo là dời đảo.
+    // Theo dõi bằng cách đọc vị trí con trỏ định kỳ thay vì capture chuột, vì cửa sổ không lấy focus.
+    private void Island_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        // Bấm vào đảo khi chưa mở thì mở ngay, không cần chờ hover.
-        if (_vm.State != IslandState.Expanded) _vm.ToggleExpanded();
+        if (e.OriginalSource is DependencyObject source && IsInsideInteractiveControl(source)) return;
+        e.Handled = true;
+        _pressCursor = Forms.Cursor.Position;
+        _pressCenterX = _centerX;
+        _dragging = false;
+        _pressTimer.Start();
+    }
+
+    private static bool IsInsideInteractiveControl(DependencyObject element)
+    {
+        for (var current = element; current is not null; current = ParentOf(current))
+        {
+            if (current is ButtonBase or ListBoxItem or Slider or ScrollBar or TextBox) return true;
+            if (current is IslandWindow) return false;
+        }
+        return false;
+    }
+
+    // VisualTreeHelper chỉ nhận Visual; chữ trong TextBlock (Run) phải đi theo cây logic.
+    private static DependencyObject? ParentOf(DependencyObject element) =>
+        element is Visual or System.Windows.Media.Media3D.Visual3D
+            ? VisualTreeHelper.GetParent(element) ?? LogicalTreeHelper.GetParent(element)
+            : LogicalTreeHelper.GetParent(element);
+
+    private void OnPressTick(object? sender, EventArgs e)
+    {
+        var cursor = Forms.Cursor.Position;
+        var dx = cursor.X - _pressCursor.X;
+
+        if (!_dragging && (Math.Abs(dx) > DragThresholdPx || Math.Abs(cursor.Y - _pressCursor.Y) > DragThresholdPx))
+        {
+            _dragging = true;
+            _vm.BeginDrag();
+        }
+
+        if (_dragging)
+        {
+            _monitor = MonitorAtPixel(cursor);
+            _centerX = _pressCenterX + dx / DpiScale;
+            Relayout(animate: false);
+        }
+
+        if (NativeMethods.IsLeftButtonDown()) return;
+
+        _pressTimer.Stop();
+        if (_dragging)
+        {
+            _dragging = false;
+            _vm.EndDrag();
+            _settings.Current.IslandX = Math.Round(_centerX, 1);
+            _settings.Current.IslandY = Math.Round(_monitor.Top + 1, 1);
+            _settings.Save();
+        }
+        else if (_vm.State != IslandState.Expanded)
+        {
+            _vm.ToggleExpanded();
+        }
     }
 
     private void OnViewModelChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(IslandViewModel.State) or nameof(IslandViewModel.LiveModule))
-            ApplyState(animate: true);
+            ApplyState(animate: !_dragging);
     }
 
     private void ApplyState(bool animate)
     {
         var (width, height, radius) = _vm.State switch
         {
-            IslandState.Expanded => (560.0, 250.0, 28.0),
-            IslandState.Peek => (400.0, 62.0, 31.0),
-            _ when _vm.LiveModule is not null => (330.0, 36.0, 18.0),
-            _ => (190.0, 34.0, 17.0),
+            // Gọn cỡ một cụm nút trên ribbon Revit.
+            IslandState.Expanded => (420.0, 136.0, 22.0),
+            IslandState.Peek => (340.0, 50.0, 18.0),
+            _ when _vm.LiveModule is not null => (300.0, 32.0, 14.0),
+            _ => (CollapsedWidth, 32.0, 14.0),
         };
 
-        Island.CornerRadius = new CornerRadius(radius);
-        Animate(Island, WidthProperty, width, animate);
+        // Đảo nở ra hai bên quanh tâm, nhưng bị đẩy vào trong nếu sát mép màn hình.
+        var outerWidth = width + 2 * Ear;
+        var anchor = _centerX - Left;
+        var x = Math.Clamp(anchor - outerWidth / 2, 0, Math.Max(0, Width - outerWidth));
+
+        Body.CornerRadius = new CornerRadius(0, 0, radius, radius);
+        Animate(Island, WidthProperty, outerWidth, animate);
         Animate(Island, HeightProperty, height, animate);
+        Animate(Island, Canvas.LeftProperty, x, animate);
 
         ShowLayer(CompactLayer, _vm.State == IslandState.Collapsed, animate);
         ShowLayer(PeekLayer, _vm.State == IslandState.Peek, animate);
@@ -150,6 +272,7 @@ public partial class IslandWindow : Window
     protected override void OnClosed(EventArgs e)
     {
         SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
+        _pressTimer.Stop();
         _fullscreen?.Dispose();
         base.OnClosed(e);
     }

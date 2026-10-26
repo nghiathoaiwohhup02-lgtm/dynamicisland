@@ -42,9 +42,9 @@ public partial class App : Application
         _viewModel = new IslandViewModel(ModuleCatalog.CreateDefault());
         await _viewModel.InitializeAsync(context);
 
-        _window = new IslandWindow(_viewModel, settings.Current.HideWhenFullscreen);
+        _window = new IslandWindow(_viewModel, settings);
         _window.Show();
-        _tray = new TrayIcon(_window.ToggleUserVisibility, Restart, Shutdown);
+        _tray = new TrayIcon(_window.ToggleUserVisibility, _window.ResetPosition, Restart, Shutdown);
         Log.Info("Đã khởi động");
     }
 

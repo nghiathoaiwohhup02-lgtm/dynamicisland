@@ -6,13 +6,13 @@ using Forms = System.Windows.Forms;
 
 namespace DynamicIsland.Shell;
 
-/// <summary>Biểu tượng ở khay hệ thống: ẩn/hiện đảo, mở cấu hình, khởi động cùng Windows, thoát.</summary>
+/// <summary>Biểu tượng ở khay hệ thống: ẩn/hiện đảo, đưa về giữa, mở cấu hình, khởi động cùng Windows, thoát.</summary>
 internal sealed class TrayIcon : IDisposable
 {
     private readonly Forms.NotifyIcon _icon;
     private readonly Icon _iconImage;
 
-    public TrayIcon(Action toggleVisible, Action restart, Action exit)
+    public TrayIcon(Action toggleVisible, Action resetPosition, Action restart, Action exit)
     {
         _iconImage = CreateIcon();
 
@@ -26,6 +26,7 @@ internal sealed class TrayIcon : IDisposable
 
         var menu = new Forms.ContextMenuStrip();
         menu.Items.Add("Ẩn / hiện đảo", null, (_, _) => toggleVisible());
+        menu.Items.Add("Đưa đảo về giữa màn hình", null, (_, _) => resetPosition());
         menu.Items.Add("Mở file cấu hình", null, (_, _) => OpenSettingsFile());
         menu.Items.Add("Khởi động lại (áp dụng cấu hình)", null, (_, _) => restart());
         menu.Items.Add(startup);

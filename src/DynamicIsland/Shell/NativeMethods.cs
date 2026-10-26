@@ -55,6 +55,20 @@ internal static partial class NativeMethods
     public static extern int GetClassName(IntPtr hWnd, StringBuilder name, int maxCount);
 
     [DllImport("user32.dll")]
+    private static extern short GetAsyncKeyState(int vKey);
+
+    [DllImport("user32.dll")]
+    private static extern int GetSystemMetrics(int index);
+
+    /// <summary>Nút chuột chính (trái, hoặc phải nếu người dùng đổi nút) đang được giữ.</summary>
+    public static bool IsLeftButtonDown()
+    {
+        const int VK_LBUTTON = 0x01, VK_RBUTTON = 0x02, SM_SWAPBUTTON = 23;
+        var key = GetSystemMetrics(SM_SWAPBUTTON) != 0 ? VK_RBUTTON : VK_LBUTTON;
+        return (GetAsyncKeyState(key) & 0x8000) != 0;
+    }
+
+    [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool DestroyIcon(IntPtr hIcon);
 }

@@ -16,6 +16,13 @@ public sealed class AppSettings
     public int PomodoroLongBreakMinutes { get; set; } = 15;
     public int PomodoroRoundsBeforeLongBreak { get; set; } = 4;
 
+    /// <summary>
+    /// Vị trí đảo do người dùng kéo tới (đơn vị DIP, tọa độ màn hình): IslandX là tâm theo chiều ngang,
+    /// IslandY là một điểm trên màn hình chứa đảo. Bỏ trống thì đảo nằm giữa màn hình chính.
+    /// </summary>
+    public double? IslandX { get; set; }
+    public double? IslandY { get; set; }
+
     /// <summary>Ẩn đảo khi có ứng dụng toàn màn hình (trình chiếu, xem video).</summary>
     public bool HideWhenFullscreen { get; set; } = true;
 

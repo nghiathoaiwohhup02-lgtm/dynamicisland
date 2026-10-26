@@ -85,7 +85,7 @@ public sealed partial class OverviewModule : IslandModule
             foreach (var day in report.Days.Skip(1).Take(3))
             {
                 var label = Vietnamese.TextInfo.ToTitleCase(day.Date.ToString("ddd", Vietnamese));
-                Forecast.Add(new ForecastItem(label, WeatherService.Describe(day.Code).Icon, $"{Math.Round(day.Min)}° / {Math.Round(day.Max)}°"));
+                Forecast.Add(new ForecastItem(label, WeatherService.Describe(day.Code).Icon, $"{Math.Round(day.Min)}/{Math.Round(day.Max)}°"));
             }
         }
         catch (Exception ex)

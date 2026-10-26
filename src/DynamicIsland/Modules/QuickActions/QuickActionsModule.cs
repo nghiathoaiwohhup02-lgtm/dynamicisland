@@ -13,7 +13,14 @@ public sealed partial class QuickActionsModule : IslandModule
     public override string Title => "Nút nhanh";
     public override string Glyph => "";
 
-    public IReadOnlyList<QuickActionItem> Actions => Context.Settings.Current.QuickActions;
+    private const string EditTarget = "@edit";
+
+    // Các nút người dùng cấu hình, cộng ô cuối "Sửa nút" để mở settings.json.
+    public IReadOnlyList<QuickActionItem> Actions =>
+    [
+        .. Context.Settings.Current.QuickActions,
+        new QuickActionItem { Name = "Sửa nút", Glyph = "\uE710", Target = EditTarget },
+    ];
 
     protected override Task OnInitializeAsync()
     {
@@ -27,6 +34,11 @@ public sealed partial class QuickActionsModule : IslandModule
     private void Run(QuickActionItem? item)
     {
         if (item is null || string.IsNullOrWhiteSpace(item.Target)) return;
+        if (item.Target == EditTarget)
+        {
+            TrayIcon.OpenSettingsFile();
+            return;
+        }
         try
         {
             var start = new ProcessStartInfo(Environment.ExpandEnvironmentVariables(item.Target)) { UseShellExecute = true };
@@ -39,7 +51,4 @@ public sealed partial class QuickActionsModule : IslandModule
             Peek("", $"Không mở được {item.Name}", item.Target, seconds: 4);
         }
     }
-
-    [RelayCommand]
-    private static void EditActions() => TrayIcon.OpenSettingsFile();
 }
