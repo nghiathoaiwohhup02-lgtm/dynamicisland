@@ -1,0 +1,36 @@
+<UserControl x:Class="DynamicIsland.Modules.QuickActions.QuickActionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+        <WrapPanel>
+            <ItemsControl ItemsSource="{Binding Actions}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Style="{StaticResource TileButton}" ToolTip="{Binding Name}"
+                                Command="{Binding DataContext.RunCommand, ElementName=Root}" CommandParameter="{Binding}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Glyph}" Style="{StaticResource Glyph}" FontSize="18" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource DimText}" FontSize="11" Margin="4,6,4,0"
+                                           HorizontalAlignment="Center" MaxWidth="68" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Style="{StaticResource TileButton}" ToolTip="Thêm/sửa nút trong settings.json, rồi chọn Khởi động lại ở khay hệ thống"
+                    Command="{Binding EditActionsCommand}">
+                <StackPanel>
+                    <TextBlock Text="&#xE710;" Style="{StaticResource Glyph}" FontSize="18" HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextDimBrush}" />
+                    <TextBlock Text="Sửa nút" Style="{StaticResource DimText}" FontSize="11" Margin="0,6,0,0" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </WrapPanel>
+    </ScrollViewer>
+</UserControl>

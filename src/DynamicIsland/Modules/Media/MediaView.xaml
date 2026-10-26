@@ -1,0 +1,36 @@
+<UserControl x:Class="DynamicIsland.Modules.Media.MediaView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Width="120" Height="120" CornerRadius="16" Background="{StaticResource SurfaceBrush}" VerticalAlignment="Center">
+            <Grid>
+                <TextBlock Text="&#xE8D6;" Style="{StaticResource Glyph}" FontSize="36" HorizontalAlignment="Center"
+                           Foreground="{StaticResource TextDimBrush}"
+                           Visibility="{Binding Artwork, Converter={StaticResource NullToVisibility}, ConverterParameter=invert}" />
+                <Border CornerRadius="16">
+                    <Border.Background>
+                        <ImageBrush ImageSource="{Binding Artwork}" Stretch="UniformToFill" />
+                    </Border.Background>
+                </Border>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center">
+            <TextBlock Text="{Binding TrackTitle}" Style="{StaticResource Text}" FontSize="18" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Artist}" Style="{StaticResource DimText}" FontSize="13" Margin="0,2,0,0" />
+            <TextBlock Text="{Binding Source}" Style="{StaticResource DimText}" FontSize="11" Margin="0,2,0,14" />
+
+            <StackPanel Orientation="Horizontal" IsEnabled="{Binding HasSession}">
+                <Button Style="{StaticResource IconButton}" Content="&#xE892;" Command="{Binding PreviousCommand}" ToolTip="Bài trước" />
+                <Button Style="{StaticResource BigIconButton}" Content="{Binding PlayPauseGlyph}" Command="{Binding PlayPauseCommand}"
+                        Margin="12,0" ToolTip="Phát / tạm dừng" />
+                <Button Style="{StaticResource IconButton}" Content="&#xE893;" Command="{Binding NextCommand}" ToolTip="Bài tiếp" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,89 @@
+# Dynamic Island cho Windows 10
+
+Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island của iPhone, gom các tiện ích dùng hằng ngày khi làm việc.
+
+## Bản 0.1 có gì
+
+| Tab | Chức năng |
+| --- | --- |
+| Tổng quan | Đồng hồ lớn, ngày, thời tiết hiện tại và 3 ngày tới (Open-Meteo, không cần API key). Bấm vào khối thời tiết để cập nhật. |
+| Nhạc | Tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
+| Pomodoro | 25 phút tập trung, 5 phút nghỉ, sau 4 vòng nghỉ 15 phút. Có âm báo khi hết giờ. |
+| Pin và âm lượng | Mức pin, thời gian còn lại, thanh kéo âm lượng, bật/tắt tiếng. |
+| Nút nhanh | Chụp màn hình, máy tính, thư mục Tải về, Notepad, Task Manager, Cài đặt, khóa máy. Thêm/sửa được. |
+
+Cách đảo hoạt động:
+
+- **Thu gọn**: hiện giờ và ngày. Khi đang phát nhạc hoặc đang chạy Pomodoro, đảo dài ra và hiện hoạt động đó (Pomodoro được ưu tiên).
+- **Mở rộng**: rê chuột vào đảo (hoặc bấm). Rời chuột ra thì tự thu lại.
+- **Báo tin**: đảo bung ra vài giây khi đổi bài, đổi âm lượng bằng phím, cắm/rút sạc, pin dưới 20% và 10%, hết giờ Pomodoro.
+- Đảo không lấy focus khi bấm (đang gõ trong Revit vẫn giữ nguyên), không hiện trong Alt+Tab, và tự ẩn khi có ứng dụng toàn màn hình (trình chiếu PowerPoint, xem video).
+- Biểu tượng ở khay hệ thống: ẩn/hiện đảo, mở file cấu hình, khởi động lại, khởi động cùng Windows, thoát.
+
+## Chạy thử
+
+Cách nhanh nhất: tải `DynamicIsland.exe` (bản build sẵn trong mục Actions → build → Artifacts) và chạy. File đã kèm .NET nên không cần cài gì thêm.
+
+Tự build (cần [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) hoặc Visual Studio 2022):
+
+```powershell
+dotnet run --project src/DynamicIsland
+```
+
+Đóng gói một file `.exe`:
+
+```powershell
+dotnet publish src/DynamicIsland -c Release -r win-x64 --self-contained true `
+  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
+  -p:EnableCompressionInSingleFile=true -o publish
+```
+
+Yêu cầu Windows 10 bản 1809 trở lên (Windows 11 cũng chạy được).
+
+## Cấu hình
+
+File `%AppData%\DynamicIsland\settings.json` được tạo ở lần chạy đầu. Mở nhanh qua khay hệ thống → *Mở file cấu hình*, sửa xong chọn *Khởi động lại*.
+
+```jsonc
+{
+  "City": "Hà Nội",                 // đổi tên thành phố là tự tra lại tọa độ
+  "PomodoroWorkMinutes": 25,
+  "PomodoroShortBreakMinutes": 5,
+  "PomodoroLongBreakMinutes": 15,
+  "PomodoroRoundsBeforeLongBreak": 4,
+  "HideWhenFullscreen": true,
+  "QuickActions": [
+    { "Name": "Dự án", "Glyph": "\uE8B7", "Target": "D:\\Projects" },
+    { "Name": "Revit", "Glyph": "\uE7F4", "Target": "C:\\Program Files\\Autodesk\\Revit 2024\\Revit.exe" },
+    { "Name": "Tải về", "Glyph": "\uE896", "Target": "explorer.exe", "Arguments": "shell:Downloads" }
+  ]
+}
+```
+
+`Target` có thể là chương trình, thư mục, trang web hoặc URI như `ms-settings:`. `Glyph` là ký tự của font [Segoe MDL2 Assets](https://learn.microsoft.com/windows/apps/design/style/segoe-ui-symbol-font).
+
+Lỗi (nếu có) được ghi vào `%AppData%\DynamicIsland\log.txt`.
+
+## Cấu trúc mã
+
+```
+src/DynamicIsland/
+  App.xaml(.cs)          khởi động, chỉ cho chạy một bản, bắt lỗi chung
+  Core/                  giao diện module, cấu hình, log
+  Shell/                 cửa sổ đảo, hiệu ứng co giãn, khay hệ thống, phát hiện toàn màn hình
+  Modules/
+    Overview/            đồng hồ + thời tiết
+    Media/               điều khiển nhạc
+    Pomodoro/
+    SystemStatus/        pin + âm lượng
+    QuickActions/        nút nhanh
+```
+
+Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module mới (vd. Outlook/Teams) ở [docs/them-module.md](docs/them-module.md).
+
+## Lộ trình
+
+- **0.1**: thanh co giãn, đồng hồ/thời tiết, nhạc, pin/âm lượng, Pomodoro, nút nhanh.
+- **0.2**: Outlook/Teams: cuộc họp sắp tới, nút vào họp, thư mới.
+- **0.3**: khay file kéo thả, trạng thái OneDrive, lịch sử clipboard, ghi chú nhanh.
+- **0.4**: Revit: tiến độ Sync/Export, nhắc Sync.
