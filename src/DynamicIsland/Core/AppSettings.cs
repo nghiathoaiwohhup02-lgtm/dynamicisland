@@ -16,6 +16,15 @@ public sealed class AppSettings
     public int PomodoroLongBreakMinutes { get; set; } = 15;
     public int PomodoroRoundsBeforeLongBreak { get; set; } = 4;
 
+    /// <summary>Nhắc Sync with Central khi Revit đang mở. 0 = tắt.</summary>
+    public int SyncReminderMinutes { get; set; } = 30;
+
+    /// <summary>Nhắc uống nước trong giờ làm. 0 = tắt.</summary>
+    public int WaterReminderMinutes { get; set; } = 60;
+    public int WaterGoalPerDay { get; set; } = 8;
+    public string WorkStart { get; set; } = "08:00";
+    public string WorkEnd { get; set; } = "17:30";
+
     /// <summary>
     /// Vị trí đảo do người dùng kéo tới (đơn vị DIP, tọa độ màn hình): IslandX là tâm theo chiều ngang,
     /// IslandY là một điểm trên màn hình chứa đảo. Bỏ trống thì đảo nằm giữa màn hình chính.

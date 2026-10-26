@@ -1,0 +1,10 @@
+<UserControl x:Class="DynamicIsland.Modules.Water.WaterCompactView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="&#xEB42;" Style="{StaticResource Glyph}" FontSize="12" Foreground="#FF64D2FF" Margin="0,0,6,0" />
+        <TextBlock Style="{StaticResource Text}" FontWeight="SemiBold" Foreground="#FF64D2FF" VerticalAlignment="Center">
+            <Run Text="Uống nước · " /><Run Text="{Binding TodayText, Mode=OneWay}" />
+        </TextBlock>
+    </StackPanel>
+</UserControl>

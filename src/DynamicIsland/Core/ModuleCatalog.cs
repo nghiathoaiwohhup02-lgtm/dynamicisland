@@ -2,7 +2,9 @@ using DynamicIsland.Modules.Media;
 using DynamicIsland.Modules.Overview;
 using DynamicIsland.Modules.Pomodoro;
 using DynamicIsland.Modules.QuickActions;
+using DynamicIsland.Modules.SyncReminder;
 using DynamicIsland.Modules.SystemStatus;
+using DynamicIsland.Modules.Water;
 
 namespace DynamicIsland.Core;
 
@@ -16,6 +18,8 @@ public static class ModuleCatalog
         new OverviewModule(),
         new MediaModule(),
         new PomodoroModule(),
+        new SyncReminderModule(),
+        new WaterModule(),
         new SystemStatusModule(),
         new QuickActionsModule(),
     ];

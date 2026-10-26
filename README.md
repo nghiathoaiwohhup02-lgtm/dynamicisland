@@ -9,6 +9,8 @@ Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island củ
 | Tổng quan | Đồng hồ lớn, ngày, thời tiết hiện tại và 3 ngày tới (Open-Meteo, không cần API key). Bấm vào khối thời tiết để cập nhật. |
 | Nhạc | Tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
 | Pomodoro | 25 phút tập trung, 5 phút nghỉ, sau 4 vòng nghỉ 15 phút. Có âm báo khi hết giờ. |
+| Nhắc Sync | Khi Revit đang mở, cứ 30 phút chưa Sync with Central thì đảo báo và chuyển đỏ. Tự nhận biết lần sync bằng cách **chỉ đọc** file journal của Revit; không mở file .rvt, không cần add-in, không tác động gì tới Revit. Có nút "Đã sync" và "Nhắc lại sau 5'". |
+| Uống nước | Nhắc mỗi 60 phút trong giờ làm (8:00–17:30). Bấm "Đã uống" để điểm danh; xem số lần hôm nay so với mục tiêu, biểu đồ 7 ngày và chuỗi ngày đạt mục tiêu. Dữ liệu ở `%AppData%\DynamicIsland\water.csv`, mở bằng Excel được. |
 | Pin và âm lượng | Mức pin, thời gian còn lại, thanh kéo âm lượng, bật/tắt tiếng. |
 | Nút nhanh | Chụp màn hình, máy tính, thư mục Tải về, Notepad, Task Manager, Cài đặt, khóa máy. Thêm/sửa được. |
 
@@ -53,6 +55,11 @@ File `%AppData%\DynamicIsland\settings.json` được tạo ở lần chạy đ�
   "PomodoroShortBreakMinutes": 5,
   "PomodoroLongBreakMinutes": 15,
   "PomodoroRoundsBeforeLongBreak": 4,
+  "SyncReminderMinutes": 30,         // 0 = tắt nhắc Sync
+  "WaterReminderMinutes": 60,        // 0 = tắt nhắc uống nước
+  "WaterGoalPerDay": 8,
+  "WorkStart": "08:00",
+  "WorkEnd": "17:30",
   "HideWhenFullscreen": true,
   "QuickActions": [
     { "Name": "Dự án", "Glyph": "\uE8B7", "Target": "D:\\Projects" },
@@ -79,6 +86,8 @@ src/DynamicIsland/
     Pomodoro/
     SystemStatus/        pin + âm lượng
     QuickActions/        nút nhanh
+    SyncReminder/        nhắc Sync with Central (đọc journal Revit)
+    Water/               nhắc uống nước + thống kê
 ```
 
 Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module mới (vd. Outlook/Teams) ở [docs/them-module.md](docs/them-module.md).
@@ -88,4 +97,4 @@ Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module m�
 - **0.1**: thanh co giãn, đồng hồ/thời tiết, nhạc, pin/âm lượng, Pomodoro, nút nhanh.
 - **0.2**: Outlook/Teams: cuộc họp sắp tới, nút vào họp, thư mới.
 - **0.3**: khay file kéo thả, trạng thái OneDrive, lịch sử clipboard, ghi chú nhanh.
-- **0.4**: Revit: tiến độ Sync/Export, nhắc Sync.
+- **0.4**: Revit: tiến độ Sync/Export.
