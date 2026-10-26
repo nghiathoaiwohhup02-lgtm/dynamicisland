@@ -33,13 +33,13 @@ public partial class App : Application
             args.SetObserved();
         };
 
-        _http.DefaultRequestHeaders.UserAgent.ParseAdd("DynamicIsland/0.1");
+        _http.DefaultRequestHeaders.UserAgent.ParseAdd("DynamicIsland/0.3");
 
         var settings = SettingsStore.Load();
         var context = new IslandContext(settings, _http, Dispatcher);
 
         // Khởi tạo module trước khi hiện cửa sổ để giao diện không gắn vào module chưa sẵn sàng.
-        _viewModel = new IslandViewModel(ModuleCatalog.CreateDefault());
+        _viewModel = new IslandViewModel(ModuleCatalog.Create(settings.Current));
         await _viewModel.InitializeAsync(context);
 
         _window = new IslandWindow(_viewModel, settings);

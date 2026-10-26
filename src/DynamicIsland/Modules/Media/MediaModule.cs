@@ -28,10 +28,10 @@ public sealed partial class MediaModule : IslandModule
 
     public override string Id => "media";
     public override string Title => "Nhạc";
-    public override string Glyph => "";
+    public override string Glyph => "\uE8D6";
     public override int LivePriority => 10;
 
-    public string PlayPauseGlyph => IsPlaying ? "" : "";
+    public string PlayPauseGlyph => IsPlaying ? "\uE769" : "\uE768";
 
     partial void OnIsPlayingChanged(bool value)
     {
@@ -108,7 +108,7 @@ public sealed partial class MediaModule : IslandModule
             // Báo bài mới khi đang thu gọn.
             var key = $"{props.Title}|{props.Artist}";
             if (_lastTrackKey is not null && key != _lastTrackKey && IsPlaying)
-                Peek("", TrackTitle, Artist, seconds: 2.5);
+                Peek("\uE8D6", TrackTitle, Artist, seconds: 2.5);
             _lastTrackKey = key;
         }
         catch (Exception ex)

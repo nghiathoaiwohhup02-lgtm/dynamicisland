@@ -32,7 +32,7 @@ public sealed partial class WaterModule : IslandModule
 
     public override string Id => "water";
     public override string Title => "Uống nước";
-    public override string Glyph => "";
+    public override string Glyph => "\uEB42";
     public override int LivePriority => 30;
 
     public ObservableCollection<WaterDay> Week { get; } = [];
@@ -95,7 +95,7 @@ public sealed partial class WaterModule : IslandModule
 
         if (IsDue && now >= _nextPeek)
         {
-            Peek("", "Uống nước thôi", $"Hôm nay {TodayCount}/{Goal} lần · bấm vào đảo để điểm danh", seconds: 6, playSound: true);
+            Peek("\uEB42", "Uống nước thôi", $"Hôm nay {TodayCount}/{Goal} lần · bấm vào đảo để điểm danh", seconds: 6, playSound: true);
             _nextPeek = now + RepeatEvery;
         }
     }
@@ -116,7 +116,7 @@ public sealed partial class WaterModule : IslandModule
         _nextPeek = now + Interval;
         RefreshStats();
         Update();
-        if (TodayCount == Goal) Peek("", "Đạt mục tiêu hôm nay", $"{Goal}/{Goal} lần, giỏi lắm!", seconds: 4);
+        if (TodayCount == Goal) Peek("\uEB42", "Đạt mục tiêu hôm nay", $"{Goal}/{Goal} lần, giỏi lắm!", seconds: 4);
     }
 
     [RelayCommand]

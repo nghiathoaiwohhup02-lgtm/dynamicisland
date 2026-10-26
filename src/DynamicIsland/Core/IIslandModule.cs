@@ -31,5 +31,8 @@ public interface IIslandModule : INotifyPropertyChanged, IDisposable
     Task InitializeAsync(IslandContext context);
 }
 
-/// <summary>Yêu cầu đảo bung ra ngắn để báo một tin (hết giờ Pomodoro, pin yếu, đổi âm lượng...).</summary>
-public sealed record PeekRequest(string Glyph, string Title, string Message, TimeSpan Duration, bool PlaySound = false);
+/// <summary>
+/// Yêu cầu đảo bung ra ngắn để báo một tin (hết giờ Pomodoro, pin yếu, đổi âm lượng...).
+/// Có <paramref name="Activate"/> thì bấm vào tin sẽ chạy hành động đó (mở báo cáo, vào họp...).
+/// </summary>
+public sealed record PeekRequest(string Glyph, string Title, string Message, TimeSpan Duration, bool PlaySound = false, Action? Activate = null);

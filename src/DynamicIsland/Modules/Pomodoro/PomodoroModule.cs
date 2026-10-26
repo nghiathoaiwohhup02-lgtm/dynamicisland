@@ -29,7 +29,7 @@ public sealed partial class PomodoroModule : IslandModule
 
     public override string Id => "pomodoro";
     public override string Title => "Pomodoro";
-    public override string Glyph => "";
+    public override string Glyph => "\uE916";
     public override int LivePriority => 20;
 
     private AppSettings S => Context.Settings.Current;
@@ -155,14 +155,14 @@ public sealed partial class PomodoroModule : IslandModule
             var longBreak = CompletedRounds % Math.Max(1, S.PomodoroRoundsBeforeLongBreak) == 0;
             var next = longBreak ? PomodoroPhase.LongBreak : PomodoroPhase.ShortBreak;
             if (announce)
-                Peek("", "Hết giờ tập trung", $"{(longBreak ? "Nghỉ dài" : "Nghỉ ngắn")} {Length(next).TotalMinutes:0} phút nhé", seconds: 6, playSound: true);
+                Peek("\uE916", "Hết giờ tập trung", $"{(longBreak ? "Nghỉ dài" : "Nghỉ ngắn")} {Length(next).TotalMinutes:0} phút nhé", seconds: 6, playSound: true);
             // Giờ nghỉ tự chạy luôn.
             BeginPhase(next, autoStart: true);
         }
         else
         {
             if (announce)
-                Peek("", "Hết giờ nghỉ", "Bấm Bắt đầu cho vòng tiếp theo", seconds: 6, playSound: true);
+                Peek("\uE916", "Hết giờ nghỉ", "Bấm Bắt đầu cho vòng tiếp theo", seconds: 6, playSound: true);
             // Vòng làm việc chờ người dùng bấm, tránh chạy khi đã rời bàn.
             BeginPhase(PomodoroPhase.Work, autoStart: false);
         }

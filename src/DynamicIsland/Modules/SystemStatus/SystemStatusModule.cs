@@ -29,10 +29,10 @@ public sealed partial class SystemStatusModule : IslandModule
 
     public override string Id => "system";
     public override string Title => "Pin và âm lượng";
-    public override string Glyph => "";
+    public override string Glyph => "\uE767";
 
-    public string BatteryGlyph => IsCharging ? "" : "";
-    public string VolumeGlyph => IsMuted || Volume < 1 ? "" : Volume < 34 ? "" : Volume < 67 ? "" : "";
+    public string BatteryGlyph => IsCharging ? "\uE83E" : "\uE83F";
+    public string VolumeGlyph => IsMuted || Volume < 1 ? "\uE74F" : Volume < 34 ? "\uE993" : Volume < 67 ? "\uE994" : "\uE995";
 
     protected override Task OnInitializeAsync()
     {
@@ -72,7 +72,7 @@ public sealed partial class SystemStatusModule : IslandModule
         if (!announce) { _lastPlugged = plugged; return; }
 
         if (_lastPlugged is not null && plugged != _lastPlugged)
-            Peek(plugged ? "" : "", plugged ? "Đã cắm sạc" : "Đã rút sạc", $"Pin {BatteryPercent}%");
+            Peek(plugged ? "\uE83E" : "\uE83F", plugged ? "Đã cắm sạc" : "Đã rút sạc", $"Pin {BatteryPercent}%");
         _lastPlugged = plugged;
 
         if (plugged) _lastWarnedLevel = 101;
@@ -83,7 +83,7 @@ public sealed partial class SystemStatusModule : IslandModule
     private void Warn(int level)
     {
         _lastWarnedLevel = level;
-        Peek("", "Pin yếu", $"Còn {BatteryPercent}%, nên cắm sạc", seconds: 5, playSound: true);
+        Peek("\uE850", "Pin yếu", $"Còn {BatteryPercent}%, nên cắm sạc", seconds: 5, playSound: true);
     }
 
     private static string FormatDuration(int seconds)

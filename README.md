@@ -2,17 +2,25 @@
 
 Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island của iPhone, gom các tiện ích dùng hằng ngày khi làm việc.
 
-## Bản 0.1 có gì
+## Có gì
 
-| Tab | Chức năng |
+| Tab (Id) | Chức năng |
 | --- | --- |
-| Tổng quan | Đồng hồ lớn, ngày, thời tiết hiện tại và 3 ngày tới (Open-Meteo, không cần API key). Bấm vào khối thời tiết để cập nhật. |
-| Nhạc | Tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
-| Pomodoro | 25 phút tập trung, 5 phút nghỉ, sau 4 vòng nghỉ 15 phút. Có âm báo khi hết giờ. |
-| Nhắc Sync | Khi Revit đang mở, cứ 30 phút chưa Sync with Central thì đảo báo và chuyển đỏ. Tự nhận biết lần sync bằng cách **chỉ đọc** file journal của Revit; không mở file .rvt, không cần add-in, không tác động gì tới Revit. Có nút "Đã sync" và "Nhắc lại sau 5'". |
-| Uống nước | Nhắc mỗi 60 phút trong giờ làm (8:00–17:30). Bấm "Đã uống" để điểm danh; xem số lần hôm nay so với mục tiêu, biểu đồ 7 ngày và chuỗi ngày đạt mục tiêu. Dữ liệu ở `%AppData%\DynamicIsland\water.csv`, mở bằng Excel được. |
-| Pin và âm lượng | Mức pin, thời gian còn lại, thanh kéo âm lượng, bật/tắt tiếng. |
-| Nút nhanh | Chụp màn hình, máy tính, thư mục Tải về, Notepad, Task Manager, Cài đặt, khóa máy. Thêm/sửa được. |
+| Tổng quan (`overview`) | Đồng hồ, ngày, thời tiết hiện tại và 3 ngày tới (Open-Meteo, không cần API key). |
+| Outlook (`outlook`) | Cuộc họp kế tiếp, nhắc trước 5 phút (bấm vào thông báo là vào Teams), số thư chưa đọc, 3 thư mới nhất (bấm để mở). Đọc từ Outlook bản cổ điển đang chạy, không cần IT cấp quyền; chỉ đọc. |
+| Teams (`teams`) | Khi đang họp: bật/tắt mic, camera ngay trên đảo thu gọn; giơ tay, rời họp. Cần bật trong Teams: Cài đặt → Quyền riêng tư → Quản lý API → Bật API, rồi bấm Cho phép khi Teams hỏi lần đầu. |
+| Báo cáo email (`report`) | Khi file báo cáo buổi sáng của hôm nay (`bao-cao-yyyy-MM-dd.html`) xuất hiện trong thư mục `Bao-cao-email`, đảo báo; bấm vào là mở trên trình duyệt. |
+| Nhạc (`media`) | Tên bài, ca sĩ, ảnh bìa, nút trước/phát/tiếp. Dùng được với Spotify, YouTube trên Edge/Chrome, VLC... |
+| Pomodoro (`pomodoro`) | 25 phút tập trung, 5 phút nghỉ, sau 4 vòng nghỉ 15 phút. Có âm báo khi hết giờ. |
+| Nhắc Sync (`sync`) | Khi Revit đang mở, cứ 30 phút chưa Sync with Central thì đảo báo và chuyển đỏ. Tự nhận biết lần sync bằng cách **chỉ đọc** file journal của Revit; không mở file .rvt, không cần add-in, không tác động gì tới Revit. |
+| Uống nước (`water`) | Nhắc mỗi 60 phút trong giờ làm. Bấm "Đã uống" để điểm danh; thống kê hôm nay, 7 ngày, chuỗi ngày đạt mục tiêu. Dữ liệu ở `water.csv`. |
+| Ghi chú (`notes`) | Ghi chú nhanh (tự lưu) và danh sách việc cần làm. Bấm vào ô chữ để gõ, Esc để đóng. |
+| Khay file (`files`) | Kéo file từ Explorer vào đảo để giữ tạm, kéo ra để thả vào email/Teams/thư mục. Khay chỉ nhớ đường dẫn, không chép hay di chuyển file. Kèm trạng thái OneDrive: đang chạy hay tắt, và file xung đột. |
+| Clipboard (`clipboard`) | 20 đoạn chữ copy gần nhất, bấm để chép lại. Chỉ giữ trong bộ nhớ, không ghi ra đĩa. |
+| Pin và âm lượng (`system`) | Mức pin, thời gian còn lại, thanh kéo âm lượng, bật/tắt tiếng. |
+| Nút nhanh (`quick`) | Chụp màn hình, máy tính, thư mục Tải về, Notepad, Task Manager, Cài đặt, khóa máy. Thêm/sửa được. |
+
+Không dùng tab nào thì thêm Id của nó vào `HiddenModules` trong cấu hình.
 
 Cách đảo hoạt động:
 
@@ -55,6 +63,9 @@ File `%AppData%\DynamicIsland\settings.json` được tạo ở lần chạy đ�
   "PomodoroShortBreakMinutes": 5,
   "PomodoroLongBreakMinutes": 15,
   "PomodoroRoundsBeforeLongBreak": 4,
+  "HiddenModules": [],               // vd. ["media", "system"]
+  "EmailReportFolder": "%USERPROFILE%\\Bao-cao-email",
+  "MeetingReminderMinutes": 5,
   "SyncReminderMinutes": 30,         // 0 = tắt nhắc Sync
   "WaterReminderMinutes": 60,        // 0 = tắt nhắc uống nước
   "WaterGoalPerDay": 8,
@@ -88,6 +99,12 @@ src/DynamicIsland/
     QuickActions/        nút nhanh
     SyncReminder/        nhắc Sync with Central (đọc journal Revit)
     Water/               nhắc uống nước + thống kê
+    Outlook/             lịch họp + thư chưa đọc (COM, chỉ đọc)
+    Teams/               mic/camera qua API cục bộ của Teams
+    EmailReport/         báo cáo email buổi sáng
+    Files/               khay file + OneDrive
+    Clipboard/           lịch sử clipboard
+    Notes/               ghi chú + việc cần làm
 ```
 
 Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module mới (vd. Outlook/Teams) ở [docs/them-module.md](docs/them-module.md).
@@ -95,6 +112,6 @@ Mỗi tiện ích là một module độc lập. Hướng dẫn thêm module m�
 ## Lộ trình
 
 - **0.1**: thanh co giãn, đồng hồ/thời tiết, nhạc, pin/âm lượng, Pomodoro, nút nhanh.
-- **0.2**: Outlook/Teams: cuộc họp sắp tới, nút vào họp, thư mới.
-- **0.3**: khay file kéo thả, trạng thái OneDrive, lịch sử clipboard, ghi chú nhanh.
-- **0.4**: Revit: tiến độ Sync/Export.
+- **0.2**: Outlook/Teams, báo cáo email buổi sáng.
+- **0.3**: khay file, OneDrive, lịch sử clipboard, ghi chú, việc cần làm.
+- Thêm: nhắc Sync with Central, nhắc uống nước.

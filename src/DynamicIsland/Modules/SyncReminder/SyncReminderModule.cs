@@ -31,7 +31,7 @@ public sealed partial class SyncReminderModule : IslandModule
 
     public override string Id => "sync";
     public override string Title => "Nhắc Sync";
-    public override string Glyph => "";
+    public override string Glyph => "\uE895";
     public override int LivePriority => 40;
 
     private TimeSpan Interval => TimeSpan.FromMinutes(Context.Settings.Current.SyncReminderMinutes);
@@ -97,7 +97,7 @@ public sealed partial class SyncReminderModule : IslandModule
 
         if (IsOverdue && DateTime.Now >= _nextPeek)
         {
-            Peek("", "Đến lúc Sync with Central", $"Đã {minutes} phút từ lần sync cuối", seconds: 6, playSound: true);
+            Peek("\uE895", "Đến lúc Sync with Central", $"Đã {minutes} phút từ lần sync cuối", seconds: 6, playSound: true);
             _nextPeek = DateTime.Now + RepeatEvery;
         }
     }

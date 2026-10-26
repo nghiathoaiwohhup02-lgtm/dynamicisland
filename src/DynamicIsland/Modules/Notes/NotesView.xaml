@@ -1,0 +1,83 @@
+<UserControl x:Class="DynamicIsland.Modules.Notes.NotesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root">
+    <UserControl.Resources>
+        <Style x:Key="Input" TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource TextBrush}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource AccentBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="{StaticResource UiFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="5,3" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalScrollBarVisibility="Hidden" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Ghi chú nhanh -->
+        <TextBox Style="{StaticResource Input}" Margin="0,0,8,0" AcceptsReturn="True" TextWrapping="Wrap"
+                 Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" ToolTip="Ghi chú nhanh, tự lưu. Esc để đóng." />
+
+        <!-- Việc cần làm -->
+        <DockPanel Grid.Column="1">
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,3">
+                <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Content="&#xE74D;" Width="18" Height="18" FontSize="9"
+                        Command="{Binding ClearDoneCommand}" ToolTip="Xóa các việc đã xong" />
+                <TextBlock Text="{Binding Summary}" Style="{StaticResource DimText}" FontSize="10" VerticalAlignment="Center" />
+            </DockPanel>
+            <TextBox DockPanel.Dock="Bottom" Style="{StaticResource Input}" Margin="0,3,0,0"
+                     Text="{Binding NewTodo, UpdateSourceTrigger=PropertyChanged}" ToolTip="Gõ việc mới rồi nhấn Enter">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding AddTodoCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+            <ScrollViewer VerticalScrollBarVisibility="Hidden" Focusable="False">
+                <ItemsControl ItemsSource="{Binding Todos}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Margin="0,0,0,1">
+                                <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Content="&#xE711;" Width="14" Height="14" FontSize="6"
+                                        Background="Transparent" Command="{Binding DataContext.RemoveTodoCommand, ElementName=Root}" CommandParameter="{Binding}" />
+                                <CheckBox IsChecked="{Binding Done}" ClickMode="Press" Focusable="False" Cursor="Hand" VerticalContentAlignment="Center">
+                                    <CheckBox.Template>
+                                        <ControlTemplate TargetType="CheckBox">
+                                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                                <Border x:Name="Box" Width="12" Height="12" CornerRadius="6" BorderThickness="1.2"
+                                                        BorderBrush="{StaticResource TextDimBrush}" VerticalAlignment="Center" />
+                                                <TextBlock x:Name="Label" Text="{Binding Text}" Style="{StaticResource Text}" FontSize="11" Margin="6,0,0,0" />
+                                            </StackPanel>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Box" Property="Background" Value="{StaticResource GreenBrush}" />
+                                                    <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource GreenBrush}" />
+                                                    <Setter TargetName="Label" Property="TextDecorations" Value="Strikethrough" />
+                                                    <Setter TargetName="Label" Property="Foreground" Value="{StaticResource TextDimBrush}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </CheckBox.Template>
+                                </CheckBox>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -16,6 +16,22 @@ public sealed class AppSettings
     public int PomodoroLongBreakMinutes { get; set; } = 15;
     public int PomodoroRoundsBeforeLongBreak { get; set; } = 4;
 
+    /// <summary>Id các tab muốn ẩn, vd. ["media", "water"]. Xem Id trong README.</summary>
+    public List<string> HiddenModules { get; set; } = [];
+
+    /// <summary>Thư mục chứa báo cáo email buổi sáng (bao-cao-yyyy-MM-dd.html).</summary>
+    public string EmailReportFolder { get; set; } = @"%USERPROFILE%\Bao-cao-email";
+    public string EmailReportFilePattern { get; set; } = "bao-cao-{0:yyyy-MM-dd}.html";
+
+    /// <summary>Ngày đã mở báo cáo, để không nhắc lại sau khi khởi động lại.</summary>
+    public DateTime? EmailReportOpenedOn { get; set; }
+
+    /// <summary>Nhắc trước giờ họp (phút).</summary>
+    public int MeetingReminderMinutes { get; set; } = 5;
+
+    /// <summary>Mã ghép nối Teams (tự lưu sau lần cho phép đầu tiên trong Teams).</summary>
+    public string? TeamsToken { get; set; }
+
     /// <summary>Nhắc Sync with Central khi Revit đang mở. 0 = tắt.</summary>
     public int SyncReminderMinutes { get; set; } = 30;
 
@@ -42,8 +58,8 @@ public sealed class QuickActionItem
 {
     public string Name { get; set; } = "";
 
-    /// <summary>Ký tự Segoe MDL2 Assets, vd. "".</summary>
-    public string Glyph { get; set; } = "";
+    /// <summary>Ký tự Segoe MDL2 Assets, vd. "\uE8EF".</summary>
+    public string Glyph { get; set; } = "\uE8A7";
 
     /// <summary>Đường dẫn chương trình, thư mục, URL hoặc URI (ms-settings:, ms-screenclip:...).</summary>
     public string Target { get; set; } = "";
@@ -52,12 +68,12 @@ public sealed class QuickActionItem
 
     public static List<QuickActionItem> Defaults() =>
     [
-        new() { Name = "Chụp màn hình", Glyph = "", Target = "ms-screenclip:" },
-        new() { Name = "Máy tính", Glyph = "", Target = "calc.exe" },
-        new() { Name = "Tải về", Glyph = "", Target = "explorer.exe", Arguments = "shell:Downloads" },
-        new() { Name = "Notepad", Glyph = "", Target = "notepad.exe" },
-        new() { Name = "Task Manager", Glyph = "", Target = "taskmgr.exe" },
-        new() { Name = "Cài đặt", Glyph = "", Target = "ms-settings:" },
-        new() { Name = "Khóa máy", Glyph = "", Target = "rundll32.exe", Arguments = "user32.dll,LockWorkStation" },
+        new() { Name = "Chụp màn hình", Glyph = "\uE722", Target = "ms-screenclip:" },
+        new() { Name = "Máy tính", Glyph = "\uE8EF", Target = "calc.exe" },
+        new() { Name = "Tải về", Glyph = "\uE896", Target = "explorer.exe", Arguments = "shell:Downloads" },
+        new() { Name = "Notepad", Glyph = "\uE70F", Target = "notepad.exe" },
+        new() { Name = "Task Manager", Glyph = "\uE9D9", Target = "taskmgr.exe" },
+        new() { Name = "Cài đặt", Glyph = "\uE713", Target = "ms-settings:" },
+        new() { Name = "Khóa máy", Glyph = "\uE72E", Target = "rundll32.exe", Arguments = "user32.dll,LockWorkStation" },
     ];
 }

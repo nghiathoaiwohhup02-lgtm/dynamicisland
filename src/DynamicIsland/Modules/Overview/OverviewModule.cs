@@ -28,7 +28,7 @@ public sealed partial class OverviewModule : IslandModule
 
     public override string Id => "overview";
     public override string Title => "Tổng quan";
-    public override string Glyph => "";
+    public override string Glyph => "\uE80F";
 
     public ObservableCollection<ForecastItem> Forecast { get; } = [];
 

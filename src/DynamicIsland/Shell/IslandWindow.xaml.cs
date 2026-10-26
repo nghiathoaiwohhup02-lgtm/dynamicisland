@@ -37,6 +37,7 @@ public partial class IslandWindow : Window
     private System.Drawing.Point _pressCursor;
     private double _pressCenterX;
     private bool _dragging;
+    private bool _keyboardMode;
 
     public IslandWindow(IslandViewModel vm, SettingsStore settings)
     {
@@ -53,6 +54,7 @@ public partial class IslandWindow : Window
             var style = (long)NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE);
             style |= NativeMethods.WS_EX_TOOLWINDOW | NativeMethods.WS_EX_NOACTIVATE;
             NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, new IntPtr(style));
+            ClipboardMonitor.Attach(hwnd);
 
             if (settings.Current.HideWhenFullscreen)
             {
@@ -67,7 +69,65 @@ public partial class IslandWindow : Window
         };
 
         Loaded += (_, _) => RestorePosition();
+        Deactivated += OnDeactivated;
         SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
+    }
+
+    // Ô nhập chữ (ghi chú, việc cần làm) cần bàn phím: tạm cho cửa sổ nhận focus, giữ đảo mở tới khi bấm ra ngoài.
+    private void Island_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.OriginalSource is not DependencyObject source || !IsInside<TextBoxBase>(source) || _keyboardMode) return;
+        _keyboardMode = true;
+        SetNoActivate(false);
+        Activate();
+        _vm.SetHoldOpen(true);
+    }
+
+    private void OnDeactivated(object? sender, EventArgs e)
+    {
+        if (!_keyboardMode) return;
+        _keyboardMode = false;
+        Keyboard.ClearFocus();
+        SetNoActivate(true);
+        _vm.SetHoldOpen(false);
+    }
+
+    private void SetNoActivate(bool enabled)
+    {
+        var hwnd = new WindowInteropHelper(this).Handle;
+        var style = (long)NativeMethods.GetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE);
+        style = enabled ? style | NativeMethods.WS_EX_NOACTIVATE : style & ~(long)NativeMethods.WS_EX_NOACTIVATE;
+        NativeMethods.SetWindowLongPtr(hwnd, NativeMethods.GWL_EXSTYLE, new IntPtr(style));
+    }
+
+    // Kéo file từ Explorer vào đảo: mở tab khay file và giữ mở trong lúc kéo.
+    private void Island_DragEnter(object sender, DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+        _vm.ShowModule("files");
+        _vm.SetHoldOpen(true);
+    }
+
+    private void Island_DragLeave(object sender, DragEventArgs e) => _vm.SetHoldOpen(_keyboardMode);
+
+    private void Island_Drop(object sender, DragEventArgs e)
+    {
+        _vm.SetHoldOpen(_keyboardMode);
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] files) _vm.DropFiles(files);
+    }
+
+    private void Island_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape) return;
+        OnDeactivated(this, EventArgs.Empty);
+        _vm.Collapse();
+    }
+
+    private static bool IsInside<T>(DependencyObject element)
+    {
+        for (var current = element; current is not null; current = ParentOf(current))
+            if (current is T) return true;
+        return false;
     }
 
     public void ToggleUserVisibility()
@@ -191,7 +251,7 @@ public partial class IslandWindow : Window
             _settings.Current.IslandY = Math.Round(_monitor.Top + 1, 1);
             _settings.Save();
         }
-        else if (_vm.State != IslandState.Expanded)
+        else if (_vm.State != IslandState.Expanded && !_vm.ActivatePeek())
         {
             _vm.ToggleExpanded();
         }
@@ -274,6 +334,7 @@ public partial class IslandWindow : Window
         SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
         _pressTimer.Stop();
         _fullscreen?.Dispose();
+        ClipboardMonitor.Detach();
         base.OnClosed(e);
     }
 }

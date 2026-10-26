@@ -11,7 +11,7 @@ public sealed partial class QuickActionsModule : IslandModule
 {
     public override string Id => "quick";
     public override string Title => "Nút nhanh";
-    public override string Glyph => "";
+    public override string Glyph => "\uE945";
 
     private const string EditTarget = "@edit";
 
@@ -48,7 +48,7 @@ public sealed partial class QuickActionsModule : IslandModule
         catch (Exception ex)
         {
             Log.Error($"Không chạy được nút \"{item.Name}\"", ex);
-            Peek("", $"Không mở được {item.Name}", item.Target, seconds: 4);
+            Peek("\uE783", $"Không mở được {item.Name}", item.Target, seconds: 4);
         }
     }
 }

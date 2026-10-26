@@ -1,0 +1,10 @@
+<UserControl x:Class="DynamicIsland.Modules.Outlook.OutlookCompactView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="&#xE787;" Style="{StaticResource Glyph}" FontSize="12" Foreground="{StaticResource OrangeBrush}" Margin="0,0,6,0" />
+        <TextBlock Text="{Binding MeetingTitle}" Style="{StaticResource Text}" MaxWidth="120" VerticalAlignment="Center" />
+        <TextBlock Text="{Binding MeetingCountdown}" Style="{StaticResource Text}" FontWeight="SemiBold" Foreground="{StaticResource OrangeBrush}"
+                   Margin="6,0,0,0" VerticalAlignment="Center" />
+    </StackPanel>
+</UserControl>

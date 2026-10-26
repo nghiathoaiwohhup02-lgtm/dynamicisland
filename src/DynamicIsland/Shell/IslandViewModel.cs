@@ -26,6 +26,7 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     private readonly DispatcherTimer _peekTimer;
     private bool _pointerInside;
     private bool _dragging;
+    private bool _holdOpen;
 
     [ObservableProperty]
     private IslandState _state = IslandState.Collapsed;
@@ -97,8 +98,41 @@ public sealed partial class IslandViewModel : ObservableObject, IDisposable
     public void PointerLeft()
     {
         _pointerInside = false;
+        if (_holdOpen) return;
         if (State == IslandState.Expanded) RestartHoverTimer(CollapseDelay);
         else _hoverTimer.Stop();
+    }
+
+    /// <summary>Giữ đảo mở dù chuột đã ra ngoài (đang gõ ghi chú, đang kéo file vào khay).</summary>
+    public void SetHoldOpen(bool hold)
+    {
+        _holdOpen = hold;
+        if (!hold && !_pointerInside && State == IslandState.Expanded) RestartHoverTimer(CollapseDelay);
+    }
+
+    /// <summary>Mở đảo ở tab của module có Id cho trước.</summary>
+    public void ShowModule(string id)
+    {
+        var module = Modules.FirstOrDefault(m => m.Id == id);
+        if (module is null) return;
+        _hoverTimer.Stop();
+        SelectedModule = module;
+        State = IslandState.Expanded;
+    }
+
+    public void DropFiles(IEnumerable<string> paths)
+    {
+        if (Modules.OfType<IFileDropTarget>().FirstOrDefault() is { } target) target.AcceptFiles(paths);
+    }
+
+    /// <summary>Bấm vào tin đang hiện: chạy hành động gắn với tin. Trả về false nếu tin không có hành động.</summary>
+    public bool ActivatePeek()
+    {
+        if (State != IslandState.Peek || Peek?.Activate is not Action activate) return false;
+        EndPeek();
+        try { activate(); }
+        catch (Exception ex) { Log.Error("Hành động của thông báo lỗi", ex); }
+        return true;
     }
 
     /// <summary>Đang kéo đảo đi chỗ khác: thu gọn và không tự mở ra.</summary>

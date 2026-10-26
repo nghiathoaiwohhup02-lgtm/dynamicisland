@@ -50,8 +50,8 @@ public abstract partial class IslandModule : ObservableObject, IIslandModule
 
     protected virtual FrameworkElement? CreateCompactView() => null;
 
-    protected void Peek(string glyph, string title, string message, double seconds = 3, bool playSound = false) =>
-        PeekRequested?.Invoke(this, new PeekRequest(glyph, title, message, TimeSpan.FromSeconds(seconds), playSound));
+    protected void Peek(string glyph, string title, string message, double seconds = 3, bool playSound = false, Action? activate = null) =>
+        PeekRequested?.Invoke(this, new PeekRequest(glyph, title, message, TimeSpan.FromSeconds(seconds), playSound, activate));
 
     /// <summary>Chạy trên luồng giao diện (sự kiện từ WinRT/COM thường đến từ luồng khác).</summary>
     protected void OnUi(Action action)

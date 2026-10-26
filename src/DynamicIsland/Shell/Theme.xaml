@@ -159,7 +159,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <Border x:Name="Bg" Background="Transparent" CornerRadius="10" Width="30" Height="22" Margin="0,0,2,0">
+                                <Border x:Name="Bg" Background="Transparent" CornerRadius="10" Width="27" Height="22" Margin="0,0,1,0">
                                     <TextBlock x:Name="Icon" Text="{Binding Glyph}" Style="{StaticResource Glyph}" FontSize="12"
                                                HorizontalAlignment="Center" Foreground="{StaticResource TextDimBrush}" />
                                 </Border>

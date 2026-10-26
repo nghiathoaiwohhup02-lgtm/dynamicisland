@@ -15,7 +15,10 @@
     <Canvas>
         <Grid x:Name="Island" Canvas.Left="0" Canvas.Top="0" Width="216" Height="32"
               MouseEnter="Island_MouseEnter" MouseLeave="Island_MouseLeave"
-              MouseLeftButtonDown="Island_MouseLeftButtonDown">
+              MouseLeftButtonDown="Island_MouseLeftButtonDown"
+              PreviewMouseLeftButtonDown="Island_PreviewMouseLeftButtonDown"
+              AllowDrop="True" DragEnter="Island_DragEnter" DragLeave="Island_DragLeave" Drop="Island_Drop"
+              KeyDown="Island_KeyDown">
 
             <Path HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{StaticResource IslandBrush}"
                   Data="M0,0 L8,0 L8,8 A8,8 0 0 0 0,0 Z" />
@@ -62,12 +65,8 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Right" Text="{Binding ClockText}" Style="{StaticResource DimText}" FontSize="11"
-                                       VerticalAlignment="Center" />
-                            <ListBox Style="{StaticResource TabList}" ItemsSource="{Binding Modules}"
-                                     SelectedItem="{Binding SelectedModule}" />
-                        </DockPanel>
+                        <ListBox Style="{StaticResource TabList}" ItemsSource="{Binding Modules}"
+                                 SelectedItem="{Binding SelectedModule}" />
                         <ContentControl Grid.Row="1" Margin="0,6,0,0" Focusable="False"
                                         Content="{Binding SelectedModule.ExpandedView}" />
                     </Grid>
