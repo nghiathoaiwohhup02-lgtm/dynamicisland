@@ -13,7 +13,7 @@ public sealed record WaterDay(string Label, int Count, double BarHeight, bool Me
 /// <summary>Nhắc uống nước trong giờ làm, điểm danh "Đã uống" và thống kê 7 ngày.</summary>
 public sealed partial class WaterModule : IslandModule
 {
-    private const double MaxBarHeight = 44;
+    private const double MaxBarHeight = 40;
     private static readonly TimeSpan RepeatEvery = TimeSpan.FromMinutes(15);
     private static readonly CultureInfo Vietnamese = CultureInfo.GetCultureInfo("vi-VN");
 

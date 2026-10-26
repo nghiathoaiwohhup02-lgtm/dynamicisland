@@ -13,7 +13,7 @@
         Đảo dạng tai thỏ (iPhone 13): dính sát mép trên, bo hai góc dưới, hai "vành" lõm nối vào mép màn hình.
     -->
     <Canvas>
-        <Grid x:Name="Island" Canvas.Left="0" Canvas.Top="0" Width="216" Height="32"
+        <Grid x:Name="Island" Canvas.Left="0" Canvas.Top="0" Width="212" Height="30"
               MouseEnter="Island_MouseEnter" MouseLeave="Island_MouseLeave"
               MouseLeftButtonDown="Island_MouseLeftButtonDown"
               PreviewMouseLeftButtonDown="Island_PreviewMouseLeftButtonDown"
@@ -21,11 +21,11 @@
               KeyDown="Island_KeyDown">
 
             <Path HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{StaticResource IslandBrush}"
-                  Data="M0,0 L8,0 L8,8 A8,8 0 0 0 0,0 Z" />
+                  Data="M0,0 L6,0 L6,6 A6,6 0 0 0 0,0 Z" />
             <Path HorizontalAlignment="Right" VerticalAlignment="Top" Fill="{StaticResource IslandBrush}"
-                  Data="M8,0 L0,0 L0,8 A8,8 0 0 1 8,0 Z" />
+                  Data="M6,0 L0,0 L0,6 A6,6 0 0 1 6,0 Z" />
 
-            <Border x:Name="Body" Margin="8,0" CornerRadius="0,0,14,14" Background="{StaticResource IslandBrush}"
+            <Border x:Name="Body" Margin="6,0" CornerRadius="0,0,10,10" Background="{StaticResource IslandBrush}"
                     Cursor="Hand">
                 <Grid>
                     <!-- Thu gọn: giờ bên trái, hoạt động đang diễn ra bên phải. -->
@@ -60,7 +60,7 @@
                     </Grid>
 
                     <!-- Mở rộng: thanh tab + nội dung module đang chọn. -->
-                    <Grid x:Name="ExpandedLayer" Margin="12,6,12,10" Opacity="0" Visibility="Collapsed" Cursor="Arrow">
+                    <Grid x:Name="ExpandedLayer" Margin="12,6,12,8" Opacity="0" Visibility="Collapsed" Cursor="Arrow">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -90,7 +90,7 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <ContentControl Grid.Row="1" Margin="0,6,0,0" Focusable="False"
+                        <ContentControl Grid.Row="1" Margin="0,4,0,0" Focusable="False"
                                         Content="{Binding SelectedModule.ExpandedView}" />
                     </Grid>
                 </Grid>

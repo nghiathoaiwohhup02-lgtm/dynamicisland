@@ -12,7 +12,7 @@
                 <TextBlock Text="{Binding PhaseText}" Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" />
                 <TextBlock Text="{Binding RoundText}" Style="{StaticResource DimText}" FontSize="11" Margin="8,0,0,0" VerticalAlignment="Bottom" />
             </StackPanel>
-            <TextBlock Text="{Binding RemainingText}" Style="{StaticResource Text}" FontSize="34" FontWeight="Light" />
+            <TextBlock Text="{Binding RemainingText}" Style="{StaticResource Text}" FontSize="30" FontWeight="Light" />
             <ProgressBar Style="{StaticResource ThinProgress}" Value="{Binding Progress, Mode=OneWay}" Margin="0,2,16,0" />
         </StackPanel>
 

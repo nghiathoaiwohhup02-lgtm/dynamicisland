@@ -13,15 +13,15 @@
         <!-- Hôm nay + điểm danh -->
         <StackPanel Margin="0,0,12,0">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding TodayText}" Style="{StaticResource Text}" FontSize="24" FontWeight="Light" />
+                <TextBlock Text="{Binding TodayText}" Style="{StaticResource Text}" FontSize="20" FontWeight="Light" />
                 <TextBlock Text="lần hôm nay" Style="{StaticResource DimText}" FontSize="11" Margin="6,0,0,4" VerticalAlignment="Bottom" />
             </StackPanel>
             <ProgressBar Style="{StaticResource ThinProgress}" Foreground="{StaticResource WaterBrush}"
                          Value="{Binding TodayProgress, Mode=OneWay}" Margin="0,2,0,4" />
             <TextBlock Text="{Binding NextText}" Style="{StaticResource DimText}" FontSize="10" ToolTip="{Binding StreakText}" />
-            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                 <Button Style="{StaticResource PillButton}" Command="{Binding DrinkCommand}"
-                        Background="{StaticResource WaterBrush}" Foreground="#FF000000" FontWeight="SemiBold" Margin="0,0,6,0">
+                        Background="{StaticResource WaterBrush}" Foreground="#FF000000" FontWeight="SemiBold" Margin="0,0,6,0" Padding="10,3">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE73E;" FontFamily="{StaticResource IconFont}" FontSize="11" VerticalAlignment="Center" Margin="0,0,5,0" />
                         <TextBlock Text="Đã uống" VerticalAlignment="Center" />
@@ -43,7 +43,7 @@
                 <DataTemplate>
                     <StackPanel Width="24" ToolTip="{Binding Count}">
                         <TextBlock Text="{Binding Count}" Style="{StaticResource DimText}" FontSize="9" HorizontalAlignment="Center" />
-                        <Grid Height="44">
+                        <Grid Height="40">
                             <Border x:Name="Bar" Width="10" Height="{Binding BarHeight}" CornerRadius="3" VerticalAlignment="Bottom"
                                     Background="{StaticResource SurfaceHoverBrush}" />
                         </Grid>

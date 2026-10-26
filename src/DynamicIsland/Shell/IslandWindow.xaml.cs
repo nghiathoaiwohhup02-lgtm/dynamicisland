@@ -19,7 +19,7 @@ public partial class IslandWindow : Window
     private static readonly Duration Fade = new(TimeSpan.FromMilliseconds(180));
 
     // Bề rộng mỗi "vành" lõm hai bên tai thỏ, khớp với hai Path trong XAML.
-    private const double Ear = 8;
+    private const double Ear = 6;
     private const double CollapsedWidth = 200;
     private const int DragThresholdPx = 4;
 
@@ -268,10 +268,10 @@ public partial class IslandWindow : Window
         var (width, height, radius) = _vm.State switch
         {
             // Gọn cỡ một cụm nút trên ribbon Revit.
-            IslandState.Expanded => (420.0, 136.0, 22.0),
-            IslandState.Peek => (340.0, 50.0, 18.0),
-            _ when _vm.LiveModule is not null => (300.0, 32.0, 14.0),
-            _ => (CollapsedWidth, 32.0, 14.0),
+            IslandState.Expanded => (420.0, 120.0, 14.0),
+            IslandState.Peek => (340.0, 48.0, 12.0),
+            _ when _vm.LiveModule is not null => (300.0, 30.0, 10.0),
+            _ => (CollapsedWidth, 30.0, 10.0),
         };
 
         // Đảo nở ra hai bên quanh tâm, nhưng bị đẩy vào trong nếu sát mép màn hình.

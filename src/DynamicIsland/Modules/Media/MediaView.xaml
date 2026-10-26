@@ -8,12 +8,12 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Border Width="64" Height="64" CornerRadius="12" Background="{StaticResource SurfaceBrush}">
+        <Border Width="60" Height="60" CornerRadius="10" Background="{StaticResource SurfaceBrush}">
             <Grid>
                 <TextBlock Text="&#xE8D6;" Style="{StaticResource Glyph}" FontSize="22" HorizontalAlignment="Center"
                            Foreground="{StaticResource TextDimBrush}"
                            Visibility="{Binding Artwork, Converter={StaticResource NullToVisibility}, ConverterParameter=invert}" />
-                <Border CornerRadius="12">
+                <Border CornerRadius="10">
                     <Border.Background>
                         <ImageBrush ImageSource="{Binding Artwork}" Stretch="UniformToFill" />
                     </Border.Background>

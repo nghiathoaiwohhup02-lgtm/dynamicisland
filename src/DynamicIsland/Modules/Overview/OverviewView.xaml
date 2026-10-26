@@ -8,7 +8,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel VerticalAlignment="Center" Margin="2,0,14,0">
-            <TextBlock Text="{Binding Time}" Style="{StaticResource Text}" FontSize="34" FontWeight="Light" />
+            <TextBlock Text="{Binding Time}" Style="{StaticResource Text}" FontSize="30" FontWeight="Light" />
             <TextBlock Text="{Binding Date}" Style="{StaticResource DimText}" FontSize="11" />
         </StackPanel>
 
