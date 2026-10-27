@@ -41,6 +41,9 @@ public sealed class AppSettings
     public string WorkStart { get; set; } = "08:00";
     public string WorkEnd { get; set; } = "17:30";
 
+    /// <summary>Giờ nhắc uống vitamin mỗi sáng (HH:mm). Để trống = tắt.</summary>
+    public string VitaminTime { get; set; } = "08:00";
+
     /// <summary>
     /// Vị trí đảo do người dùng kéo tới (đơn vị DIP, tọa độ màn hình): IslandX là tâm theo chiều ngang,
     /// IslandY là một điểm trên màn hình chứa đảo. Bỏ trống thì đảo nằm giữa màn hình chính.

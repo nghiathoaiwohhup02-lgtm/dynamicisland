@@ -8,6 +8,7 @@ using DynamicIsland.Modules.Pomodoro;
 using DynamicIsland.Modules.QuickActions;
 using DynamicIsland.Modules.SyncReminder;
 using DynamicIsland.Modules.SystemStatus;
+using DynamicIsland.Modules.Vitamin;
 using DynamicIsland.Modules.Water;
 
 namespace DynamicIsland.Core;
@@ -33,6 +34,7 @@ public static class ModuleCatalog
         ("pomodoro", () => new PomodoroModule()),
         ("sync", () => new SyncReminderModule()),
         ("water", () => new WaterModule()),
+        ("vitamin", () => new VitaminModule()),
         ("notes", () => new NotesModule()),
         ("files", () => new FilesModule()),
         ("clipboard", () => new ClipboardModule()),

@@ -12,7 +12,7 @@
     <RootNamespace>DynamicIsland</RootNamespace>
     <AssemblyName>DynamicIsland</AssemblyName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.4.7</Version>
+    <Version>0.4.8</Version>
     <Product>Dynamic Island</Product>
     <!-- Đây là ứng dụng WPF; WinForms chỉ dùng cho icon khay nên DPI vẫn đặt qua app.manifest. -->
     <NoWarn>$(NoWarn);WFAC010</NoWarn>
