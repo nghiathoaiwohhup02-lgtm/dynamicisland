@@ -26,6 +26,9 @@ public interface IIslandModule : INotifyPropertyChanged, IDisposable
     /// <summary>Giao diện thu gọn vẫn có nghĩa khi không "live": bấm chọn tab thì thu gọn vẫn hiện tab này.</summary>
     bool CanPinCompact { get; }
 
+    /// <summary>Chiều cao bảng mở rộng khi đang ở tab này (mặc định 120, tab cần nhiều chỗ như Việc thì cao hơn).</summary>
+    double ExpandedHeight { get; }
+
     FrameworkElement ExpandedView { get; }
     FrameworkElement? CompactView { get; }
 

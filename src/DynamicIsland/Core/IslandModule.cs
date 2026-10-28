@@ -20,6 +20,8 @@ public abstract partial class IslandModule : ObservableObject, IIslandModule
 
     public virtual bool CanPinCompact => false;
 
+    public virtual double ExpandedHeight => 120;
+
     protected IslandContext Context { get; private set; } = null!;
 
     public FrameworkElement ExpandedView => _expandedView ??= Bind(CreateExpandedView());

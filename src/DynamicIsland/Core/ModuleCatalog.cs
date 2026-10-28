@@ -10,6 +10,7 @@ using DynamicIsland.Modules.SyncReminder;
 using DynamicIsland.Modules.SystemStatus;
 using DynamicIsland.Modules.Vitamin;
 using DynamicIsland.Modules.Water;
+using DynamicIsland.Modules.Work;
 
 namespace DynamicIsland.Core;
 
@@ -35,6 +36,7 @@ public static class ModuleCatalog
         ("sync", () => new SyncReminderModule()),
         ("water", () => new WaterModule()),
         ("vitamin", () => new VitaminModule()),
+        ("tasks", () => new WorkModule()),
         ("notes", () => new NotesModule()),
         ("files", () => new FilesModule()),
         ("clipboard", () => new ClipboardModule()),

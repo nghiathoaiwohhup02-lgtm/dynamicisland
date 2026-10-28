@@ -301,6 +301,9 @@ public partial class IslandWindow : Window
     {
         if (e.PropertyName is nameof(IslandViewModel.State) or nameof(IslandViewModel.LiveModule))
             ApplyState(animate: !_dragging);
+        // Đổi sang tab cao hơn/thấp hơn (vd. Việc) thì bảng co giãn theo.
+        else if (e.PropertyName == nameof(IslandViewModel.SelectedModule) && _vm.State == IslandState.Expanded)
+            ApplyState(animate: true);
     }
 
     private void ApplyState(bool animate)
@@ -308,7 +311,7 @@ public partial class IslandWindow : Window
         var (width, height) = _vm.State switch
         {
             // Gọn cỡ một cụm nút trên ribbon Revit.
-            IslandState.Expanded => (420.0, 120.0),
+            IslandState.Expanded => (420.0, _vm.SelectedModule?.ExpandedHeight ?? 120.0),
             IslandState.Peek => (340.0, 48.0),
             _ when _vm.LiveModule is not null => (300.0, CollapsedHeight),
             _ => (CollapsedWidth, CollapsedHeight),

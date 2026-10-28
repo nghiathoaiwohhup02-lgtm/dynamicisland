@@ -13,6 +13,7 @@ Thanh đen co giãn ở giữa mép trên màn hình, kiểu Dynamic Island củ
 | Nhắc Sync (`sync`) | Khi Revit đang mở, cứ 30 phút chưa Sync with Central thì đảo báo và chuyển đỏ. Tự nhận biết lần sync bằng cách **chỉ đọc** file journal của Revit; không mở file .rvt, không cần add-in, không tác động gì tới Revit. |
 | Uống nước (`water`) | Nhắc mỗi 60 phút trong giờ làm. Bấm "Đã uống" để điểm danh; thống kê hôm nay, 7 ngày, chuỗi ngày đạt mục tiêu. Dữ liệu ở `water.csv`. |
 | Vitamin (`vitamin`) | Nhắc uống vitamin mỗi sáng từ 08:00 (`VitaminTime`, để trống = tắt) cho tới khi bấm "Đã uống", 15 phút bung tin một lần. Xem 7 ngày gần nhất và chuỗi ngày liên tiếp. Dữ liệu ở `vitamin.csv`. |
+| Việc (`tasks`) | Theo dõi đầu việc theo danh sách (WH-Tool, Staircase Model...) và nhóm (ST-A2, ST-A3...). Ô vuông = đã làm, ngôi sao = quan trọng, nhãn "chờ" = đang đợi người khác. Bấm vào chữ để sửa; rê chuột vào dòng để chuyển nhóm hoặc xóa. Lọc Chưa làm / Quan trọng / Tất cả. Nút "Thêm vào" đổi nhóm, tạo nhóm mới hoặc danh sách mới. Tab này mở cao hơn (420×320). Thu gọn chỉ hiện số việc. Dữ liệu ở `tasks.json`. |
 | Ghi chú (`notes`) | Ghi chú nhanh (tự lưu) và danh sách việc cần làm. Bấm vào ô chữ để gõ, Esc để đóng. |
 | Khay file (`files`) | Kéo file từ Explorer vào đảo để giữ tạm, kéo ra để thả vào email/Teams/thư mục. Khay chỉ nhớ đường dẫn, không chép hay di chuyển file. Kèm trạng thái OneDrive: đang chạy hay tắt, và file xung đột. |
 | Clipboard (`clipboard`) | 20 đoạn chữ copy gần nhất, bấm để chép lại. Chỉ giữ trong bộ nhớ, không ghi ra đĩa. |

@@ -1,0 +1,15 @@
+<UserControl x:Class="DynamicIsland.Modules.Work.WorkCompactView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Chỉ hiện con số, không hiện nội dung việc. -->
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="&#xE9D5;" Style="{StaticResource Glyph}" FontSize="12" Foreground="#FF64D2FF" Margin="0,0,6,0" />
+        <TextBlock Style="{StaticResource Text}" FontWeight="SemiBold" Foreground="#FF64D2FF" VerticalAlignment="Center">
+            <Run Text="Việc · " /><Run Text="{Binding OpenTotal, Mode=OneWay}" /><Run Text=" chưa làm" />
+        </TextBlock>
+        <TextBlock Text="&#xE735;" Style="{StaticResource Glyph}" FontSize="10" Foreground="#FFFFD60A" Margin="10,0,3,0"
+                   Visibility="{Binding HasImportant, Converter={StaticResource BoolToVisibility}}" />
+        <TextBlock Text="{Binding ImportantTotal}" Style="{StaticResource Text}" Foreground="#FFFFD60A" VerticalAlignment="Center"
+                   Visibility="{Binding HasImportant, Converter={StaticResource BoolToVisibility}}" />
+    </StackPanel>
+</UserControl>
