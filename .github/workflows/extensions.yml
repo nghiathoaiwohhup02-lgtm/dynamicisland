@@ -1,0 +1,87 @@
+name: extensions
+
+# WCP Extensions (Revit add-in + Setup.exe), in extensions/. Separate from the Dynamic Island build.
+on:
+  push:
+    paths:
+      - 'extensions/**'
+      - '.github/workflows/extensions.yml'
+    tags: ['ext-v*']
+  pull_request:
+    paths:
+      - 'extensions/**'
+      - '.github/workflows/extensions.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      # Version comes from <Version> in extensions/Directory.Build.props.
+      - name: Read version
+        shell: pwsh
+        run: |
+          $version = ([xml](Get-Content extensions/Directory.Build.props)).Project.PropertyGroup[0].Version
+          "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Build add-in (Revit 2024-2027) and Setup.exe
+        shell: pwsh
+        run: ./extensions/tools/build-setup.ps1
+
+      # Same steps a user takes: Toolkits > Create, then build.ps1 for every Revit version.
+      - name: Check the toolkit template builds for Revit 2024-2027
+        shell: pwsh
+        run: |
+          ./extensions/tools/new-toolkit.ps1 -Name "CI Kit" -Id CiKit -Root "$env:RUNNER_TEMP\kits"
+          powershell -NoProfile -ExecutionPolicy Bypass -File "$env:RUNNER_TEMP\kits\CiKit\build.ps1" -Revit 2024,2025,2026,2027
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Get-ChildItem "$env:RUNNER_TEMP\kits\CiKit\bin" -Recurse -Include current.txt | ForEach-Object { "$($_.Directory.Name): $(Get-Content $_)" }
+
+      # Opens every window outside Revit (catches XAML errors) and saves pictures of them.
+      - name: UI smoke test
+        shell: pwsh
+        run: |
+          dotnet run --project extensions/tests/UiSmoke -c Release "-p:CoreDll=$PWD\extensions\artifacts\build\2025\WcpExtensions.dll" -- extensions/artifacts/ui-shots
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Picture of Setup.exe
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $exe = "extensions/artifacts/WCP Extensions Setup $env:VERSION.exe"
+          Start-Process -FilePath $exe -ArgumentList '/screenshot', "$PWD\extensions\artifacts\ui-shots\setup.png" -Wait
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WCP-Extensions-Setup-${{ env.VERSION }}
+          path: extensions/artifacts/WCP Extensions Setup ${{ env.VERSION }}.exe
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-pictures
+          path: extensions/artifacts/ui-shots/
+          if-no-files-found: ignore
+
+      # Push a tag like ext-v0.1.0 to publish a Release page with the Setup.exe.
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/ext-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WCP Extensions ${{ env.VERSION }}
+          files: extensions/artifacts/WCP Extensions Setup ${{ env.VERSION }}.exe
+          generate_release_notes: true

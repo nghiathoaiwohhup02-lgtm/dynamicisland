@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>RevitAPIUI</AssemblyName>
+    <AssemblyVersion>25.0.0.0</AssemblyVersion>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RevitAPI\RevitAPI.csproj" />
+  </ItemGroup>
+</Project>

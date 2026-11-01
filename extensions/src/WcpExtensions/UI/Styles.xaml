@@ -1,0 +1,172 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Colours (light, iOS-like, same family as WCP Tools). -->
+    <SolidColorBrush x:Key="Wx.B.Page" Color="#F2F2F7" />
+    <SolidColorBrush x:Key="Wx.B.Card" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Wx.B.Text" Color="#1C1C1E" />
+    <SolidColorBrush x:Key="Wx.B.TextSecondary" Color="#6E6E73" />
+    <SolidColorBrush x:Key="Wx.B.Line" Color="#D1D1D6" />
+    <SolidColorBrush x:Key="Wx.B.Hover" Color="#F5F5F7" />
+    <SolidColorBrush x:Key="Wx.B.Pressed" Color="#E9E9EE" />
+    <SolidColorBrush x:Key="Wx.B.Accent" Color="#0A84FF" />
+    <SolidColorBrush x:Key="Wx.B.AccentHover" Color="#2A94FF" />
+    <SolidColorBrush x:Key="Wx.B.AccentPressed" Color="#0060DF" />
+    <SolidColorBrush x:Key="Wx.B.Danger" Color="#E5302A" />
+    <SolidColorBrush x:Key="Wx.B.Console" Color="#1C1C1E" />
+    <SolidColorBrush x:Key="Wx.B.ConsoleText" Color="#E5E5EA" />
+
+    <Style x:Key="Wx.Card" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Wx.B.Card}" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+
+    <Style x:Key="Wx.Title" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.Text}" />
+    </Style>
+
+    <Style x:Key="Wx.Heading" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.Text}" />
+    </Style>
+
+    <Style x:Key="Wx.Secondary" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.TextSecondary}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Wx.Button" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource Wx.B.Card}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Wx.B.Line}" />
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.Text}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Wx.B.Hover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Wx.B.Pressed}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Wx.B.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Wx.Primary" TargetType="Button" BasedOn="{StaticResource Wx.Button}">
+        <Setter Property="Background" Value="{StaticResource Wx.B.Accent}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Wx.B.Accent}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Wx.B.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Wx.B.AccentPressed}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Wx.Danger" TargetType="Button" BasedOn="{StaticResource Wx.Button}">
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.Danger}" />
+    </Style>
+
+    <Style x:Key="Wx.Link" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.Accent}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock x:Name="Tx" Text="{TemplateBinding Content}" Background="Transparent" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Tx" Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Wx.TextBox" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.Text}" />
+        <Setter Property="Background" Value="{StaticResource Wx.B.Card}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Wx.B.Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" Focusable="False"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Wx.B.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Read-only monospace box for build output and error details. -->
+    <Style x:Key="Wx.Console" TargetType="TextBox">
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="FontFamily" Value="Consolas" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource Wx.B.ConsoleText}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
+
+    <Style x:Key="Wx.Chip" TargetType="Border">
+        <Setter Property="CornerRadius" Value="9" />
+        <Setter Property="Padding" Value="8,1,8,2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+</ResourceDictionary>

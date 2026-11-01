@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Opens the WCP Extensions windows outside Revit and saves pictures of them (CI, Windows only).
+      dotnet run -project extensions/tests/UiSmoke - <output folder>
+    Needs src\WcpExtensions built for Revit 2025 first.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>WcpExtensions.UiSmoke</AssemblyName>
+    <RootNamespace>WcpExtensions.UiSmoke</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <CoreDll Condition="'$(CoreDll)' == ''">$(MSBuildThisFileDirectory)..\..\src\WcpExtensions\bin\2025\WcpExtensions.dll</CoreDll>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="WcpExtensions">
+      <HintPath>$(CoreDll)</HintPath>
+    </Reference>
+    <ProjectReference Include="..\RevitStubs\RevitAPI\RevitAPI.csproj" />
+    <ProjectReference Include="..\RevitStubs\RevitAPIUI\RevitAPIUI.csproj" />
+  </ItemGroup>
+
+</Project>

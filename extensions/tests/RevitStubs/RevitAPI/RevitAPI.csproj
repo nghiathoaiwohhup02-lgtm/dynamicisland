@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>RevitAPI</AssemblyName>
+    <AssemblyVersion>25.0.0.0</AssemblyVersion>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+</Project>

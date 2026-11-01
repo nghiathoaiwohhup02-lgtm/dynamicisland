@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    WCP Extensions Setup.exe - one file, no admin rights, .NET Framework 4.8 (on every Windows 10/11).
+    The add-in builds for Revit 2024-2027 are embedded as payload.zip (made by tools\build-setup.ps1).
+  -->
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>WcpExtensionsSetup</AssemblyName>
+    <RootNamespace>WcpExtensions.Setup</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <DebugType>embedded</DebugType>
+    <PayloadZip Condition="'$(PayloadZip)' == ''">$(MSBuildThisFileDirectory)..\..\artifacts\payload.zip</PayloadZip>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\WcpExtensions\MiniJson.cs" Link="MiniJson.cs" />
+    <EmbeddedResource Include="$(PayloadZip)" LogicalName="payload.zip" Condition="Exists('$(PayloadZip)')" />
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
+
+</Project>

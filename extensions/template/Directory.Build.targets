@@ -1,0 +1,25 @@
+<Project>
+  <!-- WCP Extensions kit - do not edit. -->
+
+  <Target Name="WcpCheckBuildStamp" BeforeTargets="BeforeBuild" Condition="'$(BuildStamp)' == ''">
+    <Error Text="Build this toolkit with build.ps1 (powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1). It gives each build a unique name so Revit can load it with Reload." />
+  </Target>
+
+  <Target Name="WcpCheckRevitVersion" BeforeTargets="BeforeBuild" Condition="'$(TargetFramework)' == ''">
+    <Error Text="RevitVersion must be 2024, 2025, 2026 or 2027 (got '$(RevitVersion)')." />
+  </Target>
+
+  <!--
+    After a build: remove older builds of this toolkit from bin\<year>\ and point current.txt
+    at the new one. WCP Extensions reads current.txt when you press Reload.
+  -->
+  <Target Name="WcpPublishCurrent" AfterTargets="Build">
+    <ItemGroup>
+      <_WcpOldBuild Include="$(OutDir)$(MSBuildProjectName)_b*.dll;$(OutDir)$(MSBuildProjectName)_b*.pdb;$(OutDir)$(MSBuildProjectName)_b*.deps.json"
+                    Exclude="$(OutDir)$(AssemblyName).dll;$(OutDir)$(AssemblyName).pdb;$(OutDir)$(AssemblyName).deps.json" />
+    </ItemGroup>
+    <Delete Files="@(_WcpOldBuild)" ContinueOnError="true" />
+    <WriteLinesToFile File="$(OutDir)current.txt" Lines="$(TargetFileName)" Overwrite="true" />
+    <Message Importance="high" Text="WCP Extensions: Revit $(RevitVersion) build ready -> bin\$(RevitVersion)\$(TargetFileName). Press Reload in Revit." />
+  </Target>
+</Project>

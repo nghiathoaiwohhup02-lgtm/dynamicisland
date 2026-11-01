@@ -1,0 +1,141 @@
+<Window x:Class="WcpExtensions.ManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WCP Extensions — Toolkits" Width="760" Height="700" MinWidth="620" MinHeight="520"
+        ResizeMode="CanResizeWithGrip" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        FontFamily="Segoe UI" FontSize="13" Background="#F2F2F7" Foreground="#1C1C1E">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="24,20,24,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="2,0,2,14">
+            <TextBlock Text="Toolkits" Style="{StaticResource Wx.Title}" />
+            <TextBlock Style="{StaticResource Wx.Secondary}" Margin="0,4,0,0"
+                       Text="Make your own Revit tools with Claude. Build, then press Reload — Revit never needs a restart." />
+            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                <TextBlock Text="Folder: " Foreground="{StaticResource Wx.B.TextSecondary}" />
+                <TextBlock x:Name="RootText" Foreground="{StaticResource Wx.B.TextSecondary}" TextTrimming="CharacterEllipsis" MaxWidth="480" />
+                <Button Content="Open" Style="{StaticResource Wx.Link}" Margin="10,0,0,0" Click="OpenRoot_Click" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Create -->
+        <Border Grid.Row="1" Style="{StaticResource Wx.Card}" Margin="0,0,0,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="New toolkit" Style="{StaticResource Wx.Heading}" VerticalAlignment="Center" Margin="0,0,14,0" />
+                <Grid Grid.Column="1">
+                    <TextBox x:Name="NameBox" Style="{StaticResource Wx.TextBox}" MaxLength="40" KeyDown="NameBox_KeyDown" TextChanged="NameBox_TextChanged" />
+                    <TextBlock x:Name="NameHint" Text="e.g. Thoai Tools" IsHitTestVisible="False" Margin="10,0,0,0"
+                               VerticalAlignment="Center" Foreground="#A1A1A6" />
+                </Grid>
+                <Button x:Name="CreateButton" Grid.Column="2" Content="Create" Style="{StaticResource Wx.Primary}"
+                        Margin="10,0,0,0" MinWidth="96" Click="Create_Click" />
+                <TextBlock x:Name="CreateMessage" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,10,0,0" TextWrapping="Wrap"
+                           Foreground="{StaticResource Wx.B.TextSecondary}"
+                           Text="① Create a toolkit (it comes with two sample tools)   ② Copy prompt for Claude and describe your tool   ③ When Claude has built it, press Reload." />
+            </Grid>
+        </Border>
+
+        <!-- Toolkits -->
+        <Grid Grid.Row="2">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl x:Name="ToolkitList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Wx.Card}" Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource Wx.Heading}" />
+                                        <Border Style="{StaticResource Wx.Chip}" Background="{Binding ChipBackground}" Margin="10,0,0,0">
+                                            <TextBlock Text="{Binding ChipText}" Foreground="{Binding ChipForeground}" FontSize="11" FontWeight="SemiBold" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" Text="{Binding Detail}" Style="{StaticResource Wx.Secondary}" Margin="0,4,0,0" />
+                                    <TextBlock Grid.Row="2" Text="{Binding Folder}" Foreground="#A1A1A6" FontSize="11.5" Margin="0,2,0,0"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <WrapPanel Grid.Row="3" Margin="0,12,0,0">
+                                        <Button Content="Copy prompt for Claude  ▾" Style="{StaticResource Wx.Primary}" Margin="0,0,8,6"
+                                                Click="Prompt_Click" ToolTip="Copies a ready-made request for Claude Code: new tool, change a tool, or fix an error." />
+                                        <Button Content="Build &amp; Reload" Style="{StaticResource Wx.Button}" Margin="0,0,8,6"
+                                                IsEnabled="{Binding CanBuild}" Click="Build_Click"
+                                                ToolTip="Builds this toolkit for this Revit version, then reloads it." />
+                                        <Button Content="Open folder" Style="{StaticResource Wx.Button}" Margin="0,0,8,6" Click="OpenFolder_Click" />
+                                        <Button Content="{Binding EnableText}" Style="{StaticResource Wx.Button}" Margin="0,0,8,6"
+                                                Click="Enable_Click" ToolTip="Hide or show this toolkit's tab. Nothing is deleted." />
+                                        <Button Content="Delete" Style="{StaticResource Wx.Danger}" Margin="0,0,8,6" Click="Delete_Click"
+                                                ToolTip="Moves the toolkit folder to the Recycle Bin." />
+                                    </WrapPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock x:Name="EmptyText" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                       Foreground="{StaticResource Wx.B.TextSecondary}" TextWrapping="Wrap" MaxWidth="420"
+                       Text="No toolkits yet. Type a name above and press Create — you get a toolkit with two sample tools to learn from." />
+        </Grid>
+
+        <!-- Build output -->
+        <Border x:Name="BuildPanel" Grid.Row="3" Background="{StaticResource Wx.B.Console}" CornerRadius="12"
+                Padding="14,10,14,12" Margin="0,4,0,0" Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel>
+                    <Button x:Name="HideLogButton" DockPanel.Dock="Right" Content="Hide" Style="{StaticResource Wx.Link}"
+                            Foreground="#8EC5FF" Margin="12,0,0,0" Click="HideLog_Click" />
+                    <Button x:Name="CancelButton" DockPanel.Dock="Right" Content="Stop" Style="{StaticResource Wx.Link}"
+                            Foreground="#FF8A80" Margin="12,0,0,0" Click="Cancel_Click" Visibility="Collapsed" />
+                    <TextBlock x:Name="BuildStatus" Foreground="White" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+                <TextBox x:Name="LogBox" Grid.Row="1" Style="{StaticResource Wx.Console}" Height="170" Margin="0,8,0,0" />
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <DockPanel Grid.Row="4" Margin="2,14,0,0" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
+                <TextBlock x:Name="StatusText" Foreground="{StaticResource Wx.B.Text}" TextWrapping="Wrap" MaxWidth="440" />
+                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                    <TextBlock x:Name="SdkText" Foreground="{StaticResource Wx.B.TextSecondary}" FontSize="11.5" />
+                    <Button Content="Log" Style="{StaticResource Wx.Link}" FontSize="11.5" Margin="10,0,0,0" Click="OpenLog_Click" />
+                </StackPanel>
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Content="Close" Style="{StaticResource Wx.Button}" MinWidth="84" IsCancel="True" Click="Close_Click" />
+            <Button x:Name="ReloadButton" DockPanel.Dock="Right" Content="Reload" Style="{StaticResource Wx.Button}" MinWidth="84"
+                    Margin="0,0,8,0" Click="Reload_Click" ToolTip="Load the newest build of every toolkit." />
+        </DockPanel>
+    </Grid>
+</Window>

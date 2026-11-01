@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Toolkit "__TOOLKIT_NAME__".
+    Build:  powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
+    Then press Reload in Revit.
+
+    Most settings live in Directory.Build.props (kit file, do not edit).
+    You may add NuGet packages below when a tool really needs one.
+  -->
+
+  <ItemGroup>
+    <!-- <PackageReference Include="ClosedXML" Version="0.104.2" /> -->
+  </ItemGroup>
+
+</Project>

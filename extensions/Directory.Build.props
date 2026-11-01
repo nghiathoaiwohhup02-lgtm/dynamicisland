@@ -1,0 +1,15 @@
+<Project>
+  <!-- Shared by src\WcpExtensions (Revit add-in) and src\Setup (installer). Bump Version for a new release. -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Company>WH BIM Team</Company>
+    <Product>WCP Extensions</Product>
+    <Copyright>WH BIM Team</Copyright>
+  </PropertyGroup>
+
+  <!-- The add-in is built once per Revit version; keep each build's obj\ apart. -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'WcpExtensions'">
+    <RevitVersion Condition="'$(RevitVersion)' == ''">2025</RevitVersion>
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)\obj\$(RevitVersion)\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>
