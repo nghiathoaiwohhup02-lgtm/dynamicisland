@@ -3,6 +3,8 @@ name: extensions
 # WCP Extensions (Revit add-in + Setup.exe), in extensions/. Separate from the Dynamic Island build.
 on:
   push:
+    # Both branches and tags must be listed: with tags alone, branch pushes would not run.
+    branches: ['**']
     paths:
       - 'extensions/**'
       - '.github/workflows/extensions.yml'
