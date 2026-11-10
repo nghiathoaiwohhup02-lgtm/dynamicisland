@@ -15,8 +15,10 @@ public sealed partial class OverviewModule : IslandModule
 {
     private static readonly CultureInfo Vietnamese = CultureInfo.GetCultureInfo("vi-VN");
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
-    private readonly DispatcherTimer _refresh = new() { Interval = TimeSpan.FromMinutes(20) };
+    private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(20);
+    private readonly DispatcherTimer _refresh = new() { Interval = RefreshInterval };
     private WeatherService _weather = null!;
+    private int _failures;
 
     [ObservableProperty] private string _time = "";
     [ObservableProperty] private string _date = "";
@@ -87,11 +89,16 @@ public sealed partial class OverviewModule : IslandModule
                 var label = Vietnamese.TextInfo.ToTitleCase(day.Date.ToString("ddd", Vietnamese));
                 Forecast.Add(new ForecastItem(label, WeatherService.Describe(day.Code).Icon, $"{Math.Round(day.Min)}/{Math.Round(day.Max)}°"));
             }
+            _failures = 0;
+            _refresh.Interval = RefreshInterval;
         }
         catch (Exception ex)
         {
             Log.Error("Lấy thời tiết lỗi", ex);
             Condition = "Không lấy được thời tiết";
+            // Khởi động cùng Windows thường chạy trước khi có mạng: thử lại sau 1, 2, 4... phút thay vì chờ 20 phút.
+            _failures++;
+            _refresh.Interval = TimeSpan.FromMinutes(Math.Min(RefreshInterval.TotalMinutes, Math.Pow(2, _failures - 1)));
         }
     }
 

@@ -19,12 +19,23 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Mở bản mới khi bản cũ đang chạy: tắt bản cũ rồi chạy tiếp, không phải vào Task Manager.
-        if (!TakeOverFromRunningInstance())
+        var autostart = e.Args.Contains(StartupRegistration.AutostartArgument, StringComparer.OrdinalIgnoreCase);
+        _singleInstance = new Mutex(false, MutexName);
+        if (!TryAcquire(TimeSpan.Zero))
         {
-            Log.Error("Không tắt được bản Dynamic Island đang chạy");
-            Shutdown();
-            return;
+            // Windows mở đảo lúc đăng nhập mà đảo đã chạy sẵn: giữ nguyên bản đang chạy.
+            if (autostart)
+            {
+                Shutdown();
+                return;
+            }
+            // Mở bản mới khi bản cũ đang chạy: tắt bản cũ rồi chạy tiếp, không phải vào Task Manager.
+            if (!TakeOverFromRunningInstance())
+            {
+                Log.Error("Không tắt được bản Dynamic Island đang chạy");
+                Shutdown();
+                return;
+            }
         }
         ListenForQuitRequest();
 
@@ -46,9 +57,23 @@ public partial class App : Application
 
         _window = new IslandWindow(_viewModel, settings);
         _window.Show();
-        _tray = new TrayIcon(_window.ToggleUserVisibility, _window.ResetPosition, Restart, Shutdown);
+        _tray = new TrayIcon(_window.ToggleUserVisibility, _window.ResetPosition, Restart, Shutdown, _viewModel.Announce);
+        FollowCurrentExecutableAtStartup();
         AnnounceStart(settings);
-        Log.Info($"Đã khởi động bản {TrayIcon.Version}");
+        Log.Info($"Đã khởi động bản {TrayIcon.Version}{(autostart ? " cùng Windows" : "")}");
+    }
+
+    // Đã bật khởi động cùng Windows thì trỏ khóa Run sang file đang chạy, để mở máy là chạy đúng bản mới.
+    private static void FollowCurrentExecutableAtStartup()
+    {
+        try
+        {
+            StartupRegistration.FollowCurrentExecutable();
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Không cập nhật được khởi động cùng Windows", ex);
+        }
     }
 
     // Báo trên đảo (và ở khay hệ thống) rằng đã cài/cập nhật thành công, kèm số phiên bản.
@@ -76,9 +101,6 @@ public partial class App : Application
 
     private bool TakeOverFromRunningInstance()
     {
-        _singleInstance = new Mutex(false, MutexName);
-        if (TryAcquire(TimeSpan.Zero)) return true;
-
         // Bản mới (từ 0.4) nghe tín hiệu này và tự thoát êm.
         using (var quit = new EventWaitHandle(false, EventResetMode.AutoReset, QuitEventName))
             quit.Set();

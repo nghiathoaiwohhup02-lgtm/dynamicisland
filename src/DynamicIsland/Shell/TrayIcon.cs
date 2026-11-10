@@ -12,19 +12,31 @@ internal sealed class TrayIcon : IDisposable
     private readonly Forms.NotifyIcon _icon;
     private readonly Icon _iconImage;
 
-    public TrayIcon(Action toggleVisible, Action resetPosition, Action restart, Action exit)
+    public TrayIcon(Action toggleVisible, Action resetPosition, Action restart, Action exit, Action<PeekRequest> announce)
     {
         _iconImage = CreateIcon();
 
-        var startup = new Forms.ToolStripMenuItem("Khởi động cùng Windows") { CheckOnClick = true };
-        try { startup.Checked = StartupRegistration.IsEnabled; } catch { }
-        startup.CheckedChanged += (_, _) =>
+        var startup = new Forms.ToolStripMenuItem("Khởi động cùng Windows");
+        startup.Click += (_, _) =>
         {
-            try { StartupRegistration.Set(startup.Checked); }
-            catch (Exception ex) { Log.Error("Không ghi được khóa Run", ex); }
+            var enable = !startup.Checked;
+            try
+            {
+                StartupRegistration.Set(enable);
+                announce(enable
+                    ? new PeekRequest("\uE7E8", "Đã bật khởi động cùng Windows", "Mở máy là đảo tự chạy", TimeSpan.FromSeconds(4))
+                    : new PeekRequest("\uE7E8", "Đã tắt khởi động cùng Windows", "Mở máy đảo sẽ không tự chạy", TimeSpan.FromSeconds(4)));
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Không ghi được khóa Run", ex);
+                announce(new PeekRequest("\uE783", "Không đổi được khởi động cùng Windows", "Xem log.txt để biết lỗi", TimeSpan.FromSeconds(5)));
+            }
         };
 
         var menu = new Forms.ContextMenuStrip();
+        // Đọc lại mỗi lần mở menu: người dùng có thể đã bật/tắt trong Task Manager → Startup.
+        menu.Opening += (_, _) => startup.Checked = ReadStartupEnabled();
         menu.Items.Add(new Forms.ToolStripMenuItem($"Dynamic Island {Version}") { Enabled = false });
         menu.Items.Add(new Forms.ToolStripSeparator());
         menu.Items.Add("Ẩn / hiện đảo", null, (_, _) => toggleVisible());
@@ -53,6 +65,19 @@ internal sealed class TrayIcon : IDisposable
         typeof(TrayIcon).Assembly.GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "";
 
     public void ShowBalloon(string title, string message) => _icon.ShowBalloonTip(5000, title, message, Forms.ToolTipIcon.Info);
+
+    private static bool ReadStartupEnabled()
+    {
+        try
+        {
+            return StartupRegistration.IsEnabled;
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Không đọc được khóa Run", ex);
+            return false;
+        }
+    }
 
     public static void OpenSettingsFile()
     {

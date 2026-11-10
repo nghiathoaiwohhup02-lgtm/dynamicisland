@@ -27,6 +27,7 @@ Cách đảo hoạt động:
 - **Dạng viên thuốc** như Dynamic Island của iPhone.
 - **Kéo để dời chỗ**: nhấn giữ đảo rồi kéo tới bất cứ đâu, kể cả đặt lên taskbar. Đảo ở nửa dưới màn hình thì bảng mở rộng bung lên trên. Vị trí được nhớ cho lần sau; muốn về chỗ cũ thì chọn *Đưa đảo về giữa màn hình* ở khay hệ thống.
 - **Cập nhật**: mở bản mới là bản cũ tự tắt; đảo báo "Đã cập nhật lên bản …".
+- **Khởi động cùng Windows**: bật/tắt ở khay hệ thống → *Khởi động cùng Windows*. Đã bật thì mỗi lần mở bản mới (vd. `DynamicIsland-0.5.1.exe`), Windows được chỉ sang file đó, nên mở máy là chạy đúng bản mới nhất, kể cả khi đã xóa file bản cũ. Lỡ mở lại file bản cũ thì vẫn giữ bản mới hơn. Đã tắt trong Task Manager → Startup thì menu hiện là tắt; bấm bật lại ở menu là chạy lại được. Lúc mới mở máy chưa có mạng thì thời tiết tự thử lại sau 1, 2, 4... phút.
 - **Thu gọn**: hiện giờ và ngày. Khi đang phát nhạc hoặc đang chạy Pomodoro, đảo dài ra và hiện hoạt động đó (Pomodoro được ưu tiên).
 - **Mở rộng**: rê chuột vào đảo (hoặc bấm). Bảng mở rộng gọn cỡ một cụm nút trên ribbon Revit. Rời chuột ra thì tự thu lại.
 - **Báo tin**: đảo bung ra vài giây khi đổi bài, đổi âm lượng bằng phím, cắm/rút sạc, pin dưới 20% và 10%, hết giờ Pomodoro.
